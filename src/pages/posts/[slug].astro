@@ -1,0 +1,159 @@
+---
+import Base from '../../layouts/Base.astro';
+import MdImage from '../../components/MdImage.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map(post => ({ params: { slug: post.slug } }));
+}
+
+const { slug } = Astro.params;
+const allPosts = (await getCollection('posts')).sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+const post = allPosts.find(p => p.slug === slug);
+if (!post) return Astro.redirect('/');
+
+const { Content } = await post.render();
+
+const idx  = allPosts.findIndex(p => p.slug === slug);
+const prev = idx > 0 ? allPosts[idx - 1] : null;
+const next = idx < allPosts.length - 1 ? allPosts[idx + 1] : null;
+
+const cmdItems = allPosts.map(p => ({ kind: 'writing', title: p.data.title, href: `/posts/${p.slug}` }));
+
+function fmtDate(s: string) {
+  return new Date(s)
+    .toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+    .toLowerCase();
+}
+---
+
+<Base
+  title={`${post.data.title} · abe brandsma`}
+  description={post.data.excerpt}
+  cmdItems={cmdItems}
+>
+  <div class="progress" id="progress"></div>
+
+  <main class="post-wrap">
+    <div class="crumbs reveal d1">
+      <a href="/">~</a><span class="sep">/</span>
+      <a href="/#writing">writing</a><span class="sep">/</span>
+      <span class="dim">{slug}</span>
+    </div>
+
+    <article class="reveal d2">
+      <header class="post-head">
+        <div class="post-meta">
+          <span>{fmtDate(post.data.date)}</span>
+          <span class="tag">{post.data.tag}</span>
+          <span>{post.data.reading}</span>
+        </div>
+        <h1 class="post-title">{post.data.title}</h1>
+        <p class="post-deck">{post.data.deck}</p>
+      </header>
+
+      <div class="body">
+        <Content components={{ img: MdImage }} />
+      </div>
+
+      <nav class="post-nav" aria-label="post navigation">
+        {prev ? (
+          <a class="prev" href={`/posts/${prev.slug}`}>
+            <span class="nav-label">← previous</span>
+            <span>{prev.data.title}</span>
+          </a>
+        ) : (
+          <a class="prev" href="/#writing">
+            <span class="nav-label">← back</span>
+            <span>writing index</span>
+          </a>
+        )}
+        {next ? (
+          <a class="next" href={`/posts/${next.slug}`}>
+            <span class="nav-label">next →</span>
+            <span>{next.data.title}</span>
+          </a>
+        ) : (
+          <a class="next" href="/#writing">
+            <span class="nav-label">up →</span>
+            <span>writing index</span>
+          </a>
+        )}
+      </nav>
+    </article>
+  </main>
+
+  <script>
+    // Reading progress bar
+    const bar = document.getElementById('progress');
+    function onScroll() {
+      const h = document.documentElement;
+      const max = h.scrollHeight - h.clientHeight;
+      if (bar) bar.style.width = max > 0 ? `${(h.scrollTop / max) * 100}%` : '0%';
+    }
+    document.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // ── Image modal ────────────────────────────────
+    const modal = document.createElement('div');
+    modal.className = 'img-modal';
+    const modalImg = document.createElement('img');
+    modal.appendChild(modalImg);
+    document.body.appendChild(modal);
+
+    function openModal(src: string, alt: string) {
+      modalImg.src = src;
+      modalImg.alt = alt;
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    modal.addEventListener('click', closeModal);
+
+    // Capture-phase listener: fires before the anchor's default navigation,
+    // so e.preventDefault() actually stops the link from opening.
+    document.addEventListener('click', (e) => {
+      const target = e.target as Element;
+      if (!(target instanceof HTMLImageElement)) return;
+      if (!target.closest('article .body')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      openModal(target.src, target.alt);
+    }, /* capture */ true);
+
+    // ── External links → new tab ───────────────────
+    document.querySelectorAll<HTMLAnchorElement>('article .body a').forEach(a => {
+      if (a.querySelector('img')) return; // image links handled above
+      try {
+        const url = new URL(a.href);
+        if (url.hostname !== location.hostname) {
+          a.setAttribute('target', '_blank');
+          a.setAttribute('rel', 'noopener noreferrer');
+        }
+      } catch { /* relative or invalid href — leave alone */ }
+    });
+
+    // ── Keyboard navigation ────────────────────────
+    document.addEventListener('keydown', (e) => {
+      if ((document.activeElement?.tagName ?? '').toLowerCase() === 'input') return;
+      if (document.getElementById('cmd')?.classList.contains('open')) return;
+      if (e.key === 'Escape') {
+        if (modal.classList.contains('open')) { closeModal(); return; }
+        location.href = '/#writing';
+        return;
+      }
+      if (modal.classList.contains('open')) return;
+      const prevEl = document.querySelector<HTMLAnchorElement>('.post-nav .prev');
+      const nextEl = document.querySelector<HTMLAnchorElement>('.post-nav .next');
+      if ((e.key === 'h' || e.key === 'ArrowLeft')  && prevEl?.href) location.href = prevEl.href;
+      if ((e.key === 'l' || e.key === 'ArrowRight') && nextEl?.href) location.href = nextEl.href;
+    });
+  </script>
+</Base>

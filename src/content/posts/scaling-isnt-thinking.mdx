@@ -1,0 +1,30 @@
+---
+title: "scaling isn't thinking, but it isn't nothing either"
+date: "2025-12-11"
+reading: "9 min"
+tag: "essay"
+excerpt: "is scale a substitute for ideas? the honest answer is neither — it's a forcing function that changes which ideas survive contact with reality."
+deck: "Scale isn't a substitute for ideas — it's a forcing function that changes which ideas survive."
+---
+
+I keep getting pulled into the same argument with friends from the research side and friends from the engineering side, both of whom are sure the other group is missing something obvious. The research side is annoyed because their elegant ideas keep getting steamrolled by bigger models. The engineering side is annoyed because the research side won't admit that their elegant ideas keep getting steamrolled by bigger models.
+
+Both sides are partially right, and the disagreement is mostly about *what scale actually does*.
+
+## scale as a sieve
+
+The lazy version of "scale is all you need" treats compute as a magic ingredient. Pour more in, get more capability out. The lazy version of "scale is overrated" treats it as cheating, as though a slightly worse model with a better idea would be morally superior.
+
+The version I find more useful is that scale is a *sieve*. It selects, brutally, for ideas that hold up at three or four orders of magnitude beyond where they were invented. Most ideas don't. The ones that do tend to be the ones we end up calling "obvious in retrospect" — even though they were anything but obvious before someone spent eight figures finding out.
+
+> The sharpest critique of scale isn't that it's expensive — it's that it makes us bad at noticing which ideas are surviving versus which ideas are along for the ride.
+
+## what survives
+
+I find it useful, when reading a new paper, to ask: *which part of this would still be here at 100× compute?* Sometimes the answer is "all of it" and you've found something durable. Sometimes the answer is "the architecture, but the training trick is replaced by data," and that tells you something. Sometimes the answer is "honestly, none of this," and that's also fine — not every contribution has to scale to be useful at the bench.
+
+## and what doesn't
+
+What scale doesn't help with — at least not directly — is the question of what we're optimising for. The loss function is still hand-designed. The data is still curated by humans with opinions. The deployment context is still a mess of considerations no gradient can flatten. These are the places where I want to spend my time, because they're the places where ideas still compound faster than compute does.
+
+So: scale isn't thinking. But it isn't nothing either. It's a brutal, expensive editor of which thoughts get to live.

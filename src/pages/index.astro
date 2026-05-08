@@ -1,0 +1,359 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('posts')).sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+const WORK = [
+  {
+    id: 'invertible-flows',
+    title: 'physics-informed invertible neural networks for hydrodynamic imaging',
+    year: '2025', tag: 'research', venue: 'msc thesis',
+    note: 'inverse problems · normalizing flows · pdes',
+  },
+  {
+    id: 'dss-handwriting',
+    title: 'dead sea scrolls — handwriting recognition & scribe attribution',
+    year: '2024', tag: 'research', venue: 'academic',
+    note: 'historical document analysis · low-data vision',
+  },
+  {
+    id: 'graphrag',
+    title: 'graphrag — reimplementation from scratch',
+    year: '2024', tag: 'engineering', venue: 'open source',
+    note: 'knowledge graphs · retrieval · llm pipelines',
+  },
+  {
+    id: 'looble',
+    title: 'looble — gamejam project',
+    year: '2023', tag: 'side project', venue: 'gamejam',
+    note: 'made in a weekend, still has a pulse',
+  },
+];
+
+const cmdItems = [
+  ...WORK.map(w => ({ kind: 'work',    title: w.title,       href: `/work/${w.id}` })),
+  ...posts.map(p => ({ kind: 'writing', title: p.data.title, href: `/posts/${p.slug}` })),
+  { kind: 'page', title: 'about',   href: '/#about' },
+  { kind: 'page', title: 'contact', href: '/#contact' },
+];
+
+function fmtDate(s: string) {
+  return new Date(s)
+    .toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+    .toLowerCase();
+}
+---
+
+<Base cmdItems={cmdItems}>
+  <main class="wrap">
+
+    <!-- ── hero ──────────────────────────────────── -->
+    <section class="hero reveal d1">
+      <h1>abe brandsma<span class="cur">&nbsp;</span></h1>
+      <div class="sub">ai research engineer · <em>research → engineering → production</em></div>
+      <p class="lede">
+        I build the bridge between papers and pipelines. Most of what I do is making
+        <em>interesting models</em> survive contact with <em>real systems</em> — invertible
+        neural nets for inverse problems, retrieval &amp; graph systems for messy data, and
+        the unglamorous infrastructure that keeps it all honest.
+      </p>
+      <dl class="meta-grid">
+        <dt>based</dt>  <dd>utrecht, nl · cet/cest</dd>
+        <dt>focus</dt>  <dd>physics-informed ml · retrieval / graphs · vision</dd>
+        <dt>stack</dt>  <dd>pytorch · jax · python · rust (learning)</dd>
+        <dt>now</dt>    <dd class="mid">Wrapping the invertible-nets thesis · poking at GraphRAG variants · sketching a small game on the side.</dd>
+      </dl>
+      <div class="status-line">
+        <span class="pulse"></span> available · taking conversations through 2026
+      </div>
+    </section>
+
+    <!-- ── work ───────────────────────────────────── -->
+    <section class="block reveal d2" id="work">
+      <div class="h-row">
+        <h2>selected work</h2>
+        <div class="right" id="work-count">{WORK.length} of {WORK.length}</div>
+      </div>
+      <div class="tagbar" role="tablist" aria-label="filter work" id="work-tagbar">
+        {['all', 'research', 'engineering', 'side project'].map(t => (
+          <button aria-pressed={t === 'all' ? 'true' : 'false'} data-filter={t}>{t}</button>
+        ))}
+      </div>
+      <ol class="list" id="work-list">
+        {WORK.map(w => (
+          <li data-tag={w.tag}>
+            <div>
+              <div class="row-title"><a href={`/work/${w.id}`}>{w.title}</a></div>
+              <div class="row-meta">
+                <span class="stat">{w.year}</span>
+                <span class="sep">·</span>
+                <span class="tag">{w.tag}</span>
+                <span class="sep">·</span>
+                <span>{w.venue}</span>
+                <span class="sep">·</span>
+                <span class="dim">{w.note}</span>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <!-- ── writing ────────────────────────────────── -->
+    <section class="block reveal d3" id="writing">
+      <div class="h-row">
+        <h2>writing &amp; ramblings</h2>
+        <div class="right"><kbd>j</kbd>/<kbd>k</kbd> nav · <kbd>↵</kbd> open · <kbd>/</kbd> search</div>
+      </div>
+      <div class="tagbar" role="tablist" aria-label="filter writing" id="post-tagbar">
+        {['all', 'essay', 'research', 'ramble'].map(t => (
+          <button aria-pressed={t === 'all' ? 'true' : 'false'} data-filter={t}>{t}</button>
+        ))}
+      </div>
+      <ol class="list" id="post-list">
+        {posts.map(p => (
+          <li data-tag={p.data.tag} data-slug={p.slug}>
+            <div>
+              <div class="row-title">
+                <a href={`/posts/${p.slug}`}>{p.data.title}</a>
+              </div>
+              <div class="row-meta">
+                <span class="stat">{fmtDate(p.data.date)}</span>
+                <span class="sep">·</span>
+                <span class="tag">{p.data.tag}</span>
+                <span class="sep">·</span>
+                <span>{p.data.reading}</span>
+              </div>
+              <div class="row-expand" aria-hidden="true">
+                <div class="row-expand-inner">
+                  {p.data.excerpt}
+                  <a class="read" href={`/posts/${p.slug}`}>read the whole thing</a>
+                </div>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <!-- ── about ──────────────────────────────────── -->
+    <section class="block reveal d4" id="about">
+      <div class="h-row"><h2>about</h2></div>
+      <div class="about-grid">
+        <p>
+          I'm Abe — a Dutch AI research engineer based in Utrecht. I work at the seam between
+          research and production: physics-informed ML, retrieval &amp; graph systems, and the
+          unglamorous infrastructure that turns a clever idea into something an engineer will
+          sign off on.
+        </p>
+        <p>
+          Off the clock I build small games at weekend gamejams, read more history of science
+          than is probably reasonable, and tinker with whatever's blinking in the home lab.
+          I'm slow to ship and fast to revise.
+        </p>
+      </div>
+      <div class="available">
+        <div class="label">available for</div>
+        <ul>
+          <li>
+            <span class="bullet">▸</span>
+            <span><strong style="font-weight:500">AI research engineer roles</strong> <span class="note">— remote or hybrid, EU timezones</span></span>
+          </li>
+          <li>
+            <span class="bullet">▸</span>
+            <span><strong style="font-weight:500">ML engineer roles</strong> <span class="note">— research-adjacent teams especially</span></span>
+          </li>
+          <li>
+            <span class="bullet">▸</span>
+            <span><strong style="font-weight:500">collaborations on physics-informed ML, retrieval, vision</strong> <span class="note">— always open</span></span>
+          </li>
+          <li>
+            <span class="bullet">▸</span>
+            <span><strong style="font-weight:500">any kind of collab, really — drop me a line</strong> <span class="note">— low bar</span></span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ── contact ────────────────────────────────── -->
+    <section class="block reveal d5" id="contact">
+      <div class="h-row"><h2>contact</h2></div>
+      <div style="font-family:var(--serif);font-size:15px;line-height:1.7;max-width:60ch">
+        Best place to reach me is email — short notes preferred. I read everything;
+        I reply to most things within a week.
+      </div>
+      <div class="contact-links">
+        <span class="dim">email</span>    <a href="mailto:hi@abebrandsma.com">hi@abebrandsma.com</a>
+        <span class="dim">github</span>   <a href="https://github.com/abrandsma" target="_blank" rel="noopener">github.com/abrandsma</a>
+        <span class="dim">linkedin</span> <a href="https://linkedin.com/in/abrandsma" target="_blank" rel="noopener">in/abrandsma</a>
+        <span class="dim">resume</span>   <a href="/cv.pdf">cv.pdf</a>
+      </div>
+
+      <div class="contact-form">
+        <div class="form-label" style="margin-bottom:.7rem">or send a note directly</div>
+        <form id="contact-form" action="https://formsubmit.co/9ad01dbc1e5a4a54fe292f004dd05565" method="POST">
+          <input type="hidden" name="_subject" value="portfolio contact" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="hidden" name="_template" value="table" />
+          <div class="form-grid">
+            <div>
+              <label class="form-label" for="f-name">name</label>
+              <input type="text" id="f-name" name="name" required autocomplete="name" />
+            </div>
+            <div>
+              <label class="form-label" for="f-email">email</label>
+              <input type="email" id="f-email" name="email" required autocomplete="email" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label class="form-label" for="f-message">message</label>
+            <textarea id="f-message" name="message" rows="5" required></textarea>
+          </div>
+          <button type="submit" class="form-submit" id="contact-submit">send message →</button>
+          <div class="form-status" id="form-status"></div>
+        </form>
+      </div>
+    </section>
+
+    <footer class="foot reveal d5">
+      <span>© 2026 abe brandsma · abebrandsma.com</span>
+      <a href="/posts/hello">writing</a>
+      <span class="right dim">built with astro · may 2026</span>
+    </footer>
+
+  </main>
+
+  <script>
+    /* ── work tag filter ── */
+    const workTagbar = document.getElementById('work-tagbar');
+    const workList   = document.getElementById('work-list');
+    const workCount  = document.getElementById('work-count');
+    const totalWork  = workList?.querySelectorAll('li').length ?? 0;
+
+    workTagbar?.addEventListener('click', (e) => {
+      const btn = (e.target instanceof Element) ? e.target.closest('button') : null;
+      if (!btn) return;
+      const filter = btn.dataset.filter ?? 'all';
+      workTagbar.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', 'false'));
+      btn.setAttribute('aria-pressed', 'true');
+      let visible = 0;
+      workList?.querySelectorAll('li').forEach(li => {
+        const show = filter === 'all' || (li instanceof HTMLElement && li.dataset.tag === filter);
+        li.classList.toggle('hidden', !show);
+        if (show) visible++;
+      });
+      if (workCount) workCount.textContent = `${visible} of ${totalWork}`;
+    });
+
+    /* ── post tag filter ── */
+    const postTagbar = document.getElementById('post-tagbar');
+    const postList   = document.getElementById('post-list');
+
+    postTagbar?.addEventListener('click', (e) => {
+      const btn = (e.target instanceof Element) ? e.target.closest('button') : null;
+      if (!btn) return;
+      const filter = btn.dataset.filter ?? 'all';
+      postTagbar.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', 'false'));
+      btn.setAttribute('aria-pressed', 'true');
+      postList?.querySelectorAll('li').forEach(li => {
+        const hide = filter !== 'all' && (li instanceof HTMLElement) && li.dataset.tag !== filter;
+        li.classList.toggle('hidden', hide);
+        if (hide) li.classList.remove('open');
+      });
+    });
+
+    /* ── post expand/collapse on title click ── */
+    let activePost: Element | null = null;
+
+    function openPost(li: Element) {
+      if (activePost && activePost !== li) {
+        activePost.classList.remove('open');
+        activePost.removeAttribute('aria-selected');
+        activePost.querySelector('.row-expand')?.setAttribute('aria-hidden', 'true');
+      }
+      li.classList.add('open');
+      li.setAttribute('aria-selected', 'true');
+      li.querySelector('.row-expand')?.setAttribute('aria-hidden', 'false');
+      activePost = li;
+    }
+
+    postList?.addEventListener('click', (e) => {
+      const link = (e.target instanceof Element) ? e.target.closest('.row-title a') : null;
+      if (!link) return;
+      const li = link.closest('li');
+      if (!li) return;
+      if (!li.classList.contains('open')) {
+        e.preventDefault();
+        openPost(li);
+      }
+      // second click follows the link naturally
+    });
+
+    /* ── j/k keyboard navigation ── */
+    document.addEventListener('keydown', (e) => {
+      const tag = (document.activeElement?.tagName ?? '').toLowerCase();
+      if (tag === 'input' || tag === 'textarea') return;
+      if (document.getElementById('cmd')?.classList.contains('open')) return;
+      if (e.key !== 'j' && e.key !== 'k' && e.key !== 'Enter') return;
+
+      const items = [...(postList?.querySelectorAll('li:not(.hidden)') ?? [])];
+      if (!items.length) return;
+
+      const idx = activePost ? items.indexOf(activePost) : -1;
+
+      if (e.key === 'j') {
+        e.preventDefault();
+        const next = items[Math.min(idx + 1, items.length - 1)] ?? items[0];
+        openPost(next);
+        next.scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'k') {
+        e.preventDefault();
+        const prev = items[Math.max(idx - 1, 0)] ?? items[0];
+        openPost(prev);
+        prev.scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'Enter' && activePost) {
+        const href = activePost.querySelector<HTMLAnchorElement>('.row-title a')?.href;
+        if (href) window.location.href = href;
+      }
+    });
+
+    /* ── contact form (AJAX) ── */
+    const form      = document.getElementById('contact-form') as HTMLFormElement | null;
+    const submitBtn = document.getElementById('contact-submit') as HTMLButtonElement | null;
+    const statusEl  = document.getElementById('form-status');
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!submitBtn || !statusEl || !form) return;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'sending…';
+      statusEl.className = 'form-status';
+      statusEl.textContent = '';
+
+      try {
+        const resp = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' },
+        });
+        if (resp.ok) {
+          statusEl.className = 'form-status success';
+          statusEl.textContent = "sent — I'll be in touch.";
+          form.reset();
+        } else {
+          throw new Error();
+        }
+      } catch {
+        statusEl.className = 'form-status error';
+        statusEl.textContent = 'something went wrong — email me directly at hi@abebrandsma.com';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'send message →';
+      }
+    });
+  </script>
+</Base>

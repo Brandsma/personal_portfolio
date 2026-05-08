@@ -1,0 +1,30 @@
+---
+title: "small models, big context, and the rise of the local stack"
+date: "2025-10-20"
+reading: "6 min"
+tag: "ramble"
+excerpt: "after a year running everything through a frontier api, i moved my entire personal stack to a 24gb gpu and a 4b model. here is what i lost, what i kept, and what i didn't expect."
+deck: "After a year on a frontier API I moved my personal stack to a 24GB GPU and a 4B model. Here's what I lost, what I kept, and what surprised me."
+---
+
+For most of 2025 I ran my entire personal workflow — coding assistance, drafting, summarising, the works — through a frontier API. It was great. It was also a recurring monthly bill, a dependency on someone else's uptime, and a small, persistent unease about what was being logged and where.
+
+This year I moved everything to a 4090 and a 4B local model with a fat context window. Here are the field notes.
+
+## what i lost
+
+- The top 5% of capability. The frontier model is straightforwardly better at hard reasoning, multi-step planning, and weird edge cases.
+- Speed for short prompts. The local model is faster on long context but slower on tiny ones.
+- Tool use that "just works." I had to wire up function calling myself, and it shows.
+
+## what i kept
+
+- ~95% of my actual day-to-day usefulness. Most of what I do with an LLM is not a hard reasoning task.
+- Privacy. Logs that don't leave the box.
+- Latency for long-context jobs (whole-codebase Q&A is much faster locally than over an API).
+
+## what surprised me
+
+I expected the local model to feel like a downgrade. It does, sometimes — but the more interesting effect is that I started writing different prompts. Without the implicit "the model can probably figure it out" cushion of a frontier API, I structure my asks more carefully. And when I do, the small model is genuinely surprisingly good.
+
+This isn't a "you don't need frontier models" post. You probably do, sometimes. But the gap between "I always use the API" and "I never use the API" has gotten a lot wider, and the middle is where most of my workflow now lives.
