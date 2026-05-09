@@ -20,6 +20,7 @@ const work = defineCollection({
     tag: z.string(),
     venue: z.string(),
     note: z.string(),
+    order: z.number(),
   }),
 });
 

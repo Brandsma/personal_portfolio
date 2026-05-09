@@ -6,43 +6,12 @@ const posts = (await getCollection('posts')).sort(
   (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
 );
 
-const WORK = [
-  {
-    id: 'invertible-flows',
-    title: 'physics-informed invertible neural networks for hydrodynamic imaging',
-    year: '2025',
-    tag: 'research',
-    venue: 'msc thesis',
-    note: 'inverse problems · normalizing flows · pdes',
-  },
-  {
-    id: 'dss-handwriting',
-    title: 'dead sea scrolls — handwriting recognition & scribe attribution',
-    year: '2024',
-    tag: 'research',
-    venue: 'academic',
-    note: 'historical document analysis · low-data vision',
-  },
-  {
-    id: 'graphrag',
-    title: 'graphrag — reimplementation from scratch',
-    year: '2024',
-    tag: 'engineering',
-    venue: 'open source',
-    note: 'knowledge graphs · retrieval · llm pipelines',
-  },
-  {
-    id: 'gamejam-projects',
-    title: 'looble — gamejam project',
-    year: '2023',
-    tag: 'side project',
-    venue: 'gamejam',
-    note: 'made in a weekend, still has a pulse',
-  },
-];
+const WORK = (await getCollection('work')).sort(
+  (a, b) => a.data.order - b.data.order,
+);
 
 const cmdItems = [
-  ...WORK.map((w) => ({ kind: 'work', title: w.title, href: `/work/${w.id}` })),
+  ...WORK.map((w) => ({ kind: 'work', title: w.data.title, href: `/work/${w.slug}` })),
   ...posts.map((p) => ({ kind: 'writing', title: p.data.title, href: `/posts/${p.slug}` })),
   { kind: 'page', title: 'about', href: '/#about' },
   { kind: 'page', title: 'contact', href: '/#contact' },
@@ -103,19 +72,19 @@ function fmtDate(s: string) {
       <ol class="list" id="work-list">
         {
           WORK.map((w) => (
-            <li data-tag={w.tag}>
+            <li data-tag={w.data.tag}>
               <div>
                 <div class="row-title">
-                  <a href={`/work/${w.id}`}>{w.title}</a>
+                  <a href={`/work/${w.slug}`}>{w.data.title}</a>
                 </div>
                 <div class="row-meta">
-                  <span class="stat">{w.year}</span>
+                  <span class="stat">{w.data.year}</span>
                   <span class="sep">·</span>
-                  <span class="tag">{w.tag}</span>
+                  <span class="tag">{w.data.tag}</span>
                   <span class="sep">·</span>
-                  <span>{w.venue}</span>
+                  <span>{w.data.venue}</span>
                   <span class="sep">·</span>
-                  <span class="dim">{w.note}</span>
+                  <span class="dim">{w.data.note}</span>
                 </div>
               </div>
             </li>
