@@ -6,9 +6,7 @@ const posts = (await getCollection('posts')).sort(
   (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
 );
 
-const WORK = (await getCollection('work')).sort(
-  (a, b) => a.data.order - b.data.order,
-);
+const WORK = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
 
 const cmdItems = [
   ...WORK.map((w) => ({ kind: 'work', title: w.data.title, href: `/work/${w.slug}` })),
