@@ -27,12 +27,12 @@ function fmtDate(s: string) {
     <!-- ── hero ──────────────────────────────────── -->
     <section class="hero reveal d1">
       <h1>abe brandsma<span class="cur">&nbsp;</span></h1>
-      <div class="sub">ai research engineer · <em>research → engineering → production</em></div>
+      <div class="sub">ai research engineer</div>
       <p class="lede">
         I build the bridge between papers and pipelines. Most of what I do is making
-        <em>interesting models</em> survive contact with <em>real systems</em> — invertible neural nets
-        for inverse problems, retrieval &amp; graph systems for messy data, and the unglamorous infrastructure
-        that keeps it all honest.
+        <em>interesting models</em> survive contact with <em>real systems</em>. Invertible neural
+        nets for inverse problems, retrieval &amp; graph systems for messy data, and the unglamorous
+        infrastructure that keeps it all honest.
       </p>
       <dl class="meta-grid">
         <dt>based</dt>
@@ -41,11 +41,6 @@ function fmtDate(s: string) {
         <dd>physics-informed ml · retrieval / graphs · vision</dd>
         <dt>stack</dt>
         <dd>pytorch · jax · python · rust (learning)</dd>
-        <dt>now</dt>
-        <dd class="mid">
-          Wrapping the invertible-nets thesis · poking at GraphRAG variants · sketching a small game
-          on the side.
-        </dd>
       </dl>
       <div class="status-line">
         <span class="pulse"></span> available · taking conversations through 2026
@@ -143,15 +138,14 @@ function fmtDate(s: string) {
       <div class="h-row"><h2>about</h2></div>
       <div class="about-grid">
         <p>
-          I'm Abe — a Dutch AI research engineer based in Utrecht. I work at the seam between
-          research and production: physics-informed ML, retrieval &amp; graph systems, and the
-          unglamorous infrastructure that turns a clever idea into something an engineer will sign
-          off on.
+          I'm Abe, a Dutch AI research engineer based in Utrecht. I work at the seam between
+          research and production: working with newest machine learning research and AI
+          applications, and the unglamorous infrastructure that turns a clever idea into something
+          an engineer will sign off on.
         </p>
         <p>
           Off the clock I build small games at weekend gamejams, read more history of science than
-          is probably reasonable, and tinker with whatever's blinking in the home lab. I'm slow to
-          ship and fast to revise.
+          is probably reasonable, and tinker with whatever's blinking in the home lab.
         </p>
       </div>
       <div class="available">
@@ -161,14 +155,14 @@ function fmtDate(s: string) {
             <span class="bullet">▸</span>
             <span
               ><strong style="font-weight:500">AI research engineer roles</strong>
-              <span class="note">— remote or hybrid, EU timezones</span></span
+              <span class="note">remote or hybrid</span></span
             >
           </li>
           <li>
             <span class="bullet">▸</span>
             <span
               ><strong style="font-weight:500">ML engineer roles</strong>
-              <span class="note">— research-adjacent teams especially</span></span
+              <span class="note">research-adjacent teams especially</span></span
             >
           </li>
           <li>
@@ -177,14 +171,14 @@ function fmtDate(s: string) {
               ><strong style="font-weight:500"
                 >collaborations on physics-informed ML, retrieval, vision</strong
               >
-              <span class="note">— always open</span></span
+              <span class="note">always open</span></span
             >
           </li>
           <li>
             <span class="bullet">▸</span>
             <span
-              ><strong style="font-weight:500">any kind of collab, really — drop me a line</strong>
-              <span class="note">— low bar</span></span
+              ><strong style="font-weight:500">any kind of collab, really. Drop me a line</strong>
+              <span class="note">low bar</span></span
             >
           </li>
         </ul>
@@ -195,20 +189,21 @@ function fmtDate(s: string) {
     <section class="block reveal d5" id="contact">
       <div class="h-row"><h2>contact</h2></div>
       <div style="font-family:var(--serif);font-size:15px;line-height:1.7;max-width:60ch">
-        Best place to reach me is email — short notes preferred. I read everything; I reply to most
+        Best place to reach me is email. Short notes preferred. I read everything; I reply to most
         things within a week.
       </div>
       <div class="contact-links">
         <span class="dim">email</span>
-        <a href="mailto:hi@abebrandsma.com">hi@abebrandsma.com</a>
+        <a href="mailto:a.brandsma+portfolio@pm.me">a.brandsma@pm.me</a>
         <span class="dim">github</span>
-        <a href="https://github.com/abrandsma" target="_blank" rel="noopener"
-          >github.com/abrandsma</a
-        >
+        <a href="https://github.com/brandsma" target="_blank" rel="noopener">github.com/brandsma</a>
         <span class="dim">linkedin</span>
-        <a href="https://linkedin.com/in/abrandsma" target="_blank" rel="noopener">in/abrandsma</a>
+        <a href="https://linkedin.com/in/abe-brandsma" target="_blank" rel="noopener"
+          >in/abe-brandsma</a
+        >
         <span class="dim">resume</span>
-        <a href="mailto:hi@abebrandsma.com?subject=Resume%20request">available on request</a>
+        <a href="mailto:a.brandsma+portfolio@pm.me?subject=Resume%20request">available on request</a
+        >
       </div>
 
       <div class="contact-form">
@@ -235,7 +230,7 @@ function fmtDate(s: string) {
             <label class="form-label" for="f-message">message</label>
             <textarea id="f-message" name="message" rows="5" required></textarea>
           </div>
-          <button type="submit" class="form-submit" id="contact-submit">send message →</button>
+          <button type="submit" class="form-submit" id="contact-submit">send message</button>
           <div class="form-status" id="form-status"></div>
         </form>
       </div>
@@ -364,14 +359,14 @@ function fmtDate(s: string) {
         });
         if (resp.ok) {
           statusEl.className = 'form-status success';
-          statusEl.textContent = "sent — I'll be in touch.";
+          statusEl.textContent = "sent. I'll be in touch.";
           form.reset();
         } else {
           throw new Error();
         }
       } catch {
         statusEl.className = 'form-status error';
-        statusEl.textContent = 'something went wrong — email me directly at hi@abebrandsma.com';
+        statusEl.textContent = 'something went wrong. Email me directly at hi@abebrandsma.com';
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'send message →';

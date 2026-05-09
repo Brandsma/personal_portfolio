@@ -8,8 +8,8 @@ interface Props {
 }
 
 const {
-  title = 'abe brandsma — ai research engineer',
-  description = 'AI research engineer based in Utrecht, NL. Physics-informed ML, retrieval & graph systems, and the infrastructure that makes research production-ready.',
+  title = 'abe brandsma | ai research engineer',
+  description = 'AI research engineer based in Utrecht, NL. Physics-informed ML, retrieval & graph systems, and the infrastructure that supports production-ready research.',
   cmdItems = [],
 } = Astro.props;
 ---
@@ -40,7 +40,7 @@ const {
         <a class="brand" href="/"
           ><span class="caret">▌</span>abebrandsma<span class="dot">.com</span></a
         >
-        <span class="clock" id="clock">--:-- UTC</span>
+        <span class="clock" id="clock">--:-- Amsterdam</span>
         <nav>
           <a href="/#work">work</a>
           <a href="/#writing">writing</a>
@@ -76,7 +76,7 @@ const {
     </div>
 
     <script is:inline define:vars={{ cmdItems }}>
-      // Theme — apply before paint to avoid flash
+      // Theme: apply before paint to avoid flash
       (function () {
         const saved = localStorage.getItem('portfolio_theme');
         if (saved) document.documentElement.setAttribute('data-theme', saved);
@@ -91,9 +91,16 @@ const {
 
       // Live clock
       const clockEl = document.getElementById('clock');
+      const clockFormatter = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/Amsterdam',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      });
+
       function tick() {
         if (!clockEl) return;
-        clockEl.textContent = new Date().toISOString().slice(11, 16) + ' UTC · utrecht';
+        clockEl.textContent = clockFormatter.format(new Date()) + ' Amsterdam';
       }
       tick();
       setInterval(tick, 30_000);
