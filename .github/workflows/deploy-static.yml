@@ -3,9 +3,6 @@ name: Deploy static portfolio to GitHub Pages
 on:
   push:
     branches: [main]
-    paths:
-      - 'new_portfolio/**'
-      - '.github/workflows/deploy-static.yml'
   workflow_dispatch:
 
 permissions:
@@ -22,9 +19,6 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: new_portfolio
 
     steps:
       - name: Checkout
@@ -33,9 +27,9 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
           cache: npm
-          cache-dependency-path: new_portfolio/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -46,7 +40,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: new_portfolio/dist
+          path: dist
 
   deploy:
     name: Deploy
