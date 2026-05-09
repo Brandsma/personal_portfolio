@@ -173,39 +173,18 @@ declare module 'astro:content' {
   collection: "posts";
   data: InferEntrySchema<"posts">
 } & { render(): Render[".mdx"] };
-"invertible-notes.mdx": {
-	id: "invertible-notes.mdx";
-  slug: "invertible-notes";
-  body: string;
-  collection: "posts";
-  data: InferEntrySchema<"posts">
-} & { render(): Render[".mdx"] };
-"physics-priors.mdx": {
-	id: "physics-priors.mdx";
-  slug: "physics-priors";
-  body: string;
-  collection: "posts";
-  data: InferEntrySchema<"posts">
-} & { render(): Render[".mdx"] };
-"scaling-isnt-thinking.mdx": {
-	id: "scaling-isnt-thinking.mdx";
-  slug: "scaling-isnt-thinking";
-  body: string;
-  collection: "posts";
-  data: InferEntrySchema<"posts">
-} & { render(): Render[".mdx"] };
-"small-models-big-context.mdx": {
-	id: "small-models-big-context.mdx";
-  slug: "small-models-big-context";
-  body: string;
-  collection: "posts";
-  data: InferEntrySchema<"posts">
-} & { render(): Render[".mdx"] };
 };
 "work": {
 "dss-handwriting.mdx": {
 	id: "dss-handwriting.mdx";
   slug: "dss-handwriting";
+  body: string;
+  collection: "work";
+  data: InferEntrySchema<"work">
+} & { render(): Render[".mdx"] };
+"gamejam-projects.mdx": {
+	id: "gamejam-projects.mdx";
+  slug: "gamejam-projects";
   body: string;
   collection: "work";
   data: InferEntrySchema<"work">
@@ -220,13 +199,6 @@ declare module 'astro:content' {
 "invertible-flows.mdx": {
 	id: "invertible-flows.mdx";
   slug: "invertible-flows";
-  body: string;
-  collection: "work";
-  data: InferEntrySchema<"work">
-} & { render(): Render[".mdx"] };
-"looble.mdx": {
-	id: "looble.mdx";
-  slug: "looble";
   body: string;
   collection: "work";
   data: InferEntrySchema<"work">

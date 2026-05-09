@@ -3,40 +3,48 @@ import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('posts')).sort(
-  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
 );
 
 const WORK = [
   {
     id: 'invertible-flows',
     title: 'physics-informed invertible neural networks for hydrodynamic imaging',
-    year: '2025', tag: 'research', venue: 'msc thesis',
+    year: '2025',
+    tag: 'research',
+    venue: 'msc thesis',
     note: 'inverse problems · normalizing flows · pdes',
   },
   {
     id: 'dss-handwriting',
     title: 'dead sea scrolls — handwriting recognition & scribe attribution',
-    year: '2024', tag: 'research', venue: 'academic',
+    year: '2024',
+    tag: 'research',
+    venue: 'academic',
     note: 'historical document analysis · low-data vision',
   },
   {
     id: 'graphrag',
     title: 'graphrag — reimplementation from scratch',
-    year: '2024', tag: 'engineering', venue: 'open source',
+    year: '2024',
+    tag: 'engineering',
+    venue: 'open source',
     note: 'knowledge graphs · retrieval · llm pipelines',
   },
   {
-    id: 'looble',
+    id: 'gamejam-projects',
     title: 'looble — gamejam project',
-    year: '2023', tag: 'side project', venue: 'gamejam',
+    year: '2023',
+    tag: 'side project',
+    venue: 'gamejam',
     note: 'made in a weekend, still has a pulse',
   },
 ];
 
 const cmdItems = [
-  ...WORK.map(w => ({ kind: 'work',    title: w.title,       href: `/work/${w.id}` })),
-  ...posts.map(p => ({ kind: 'writing', title: p.data.title, href: `/posts/${p.slug}` })),
-  { kind: 'page', title: 'about',   href: '/#about' },
+  ...WORK.map((w) => ({ kind: 'work', title: w.title, href: `/work/${w.id}` })),
+  ...posts.map((p) => ({ kind: 'writing', title: p.data.title, href: `/posts/${p.slug}` })),
+  { kind: 'page', title: 'about', href: '/#about' },
   { kind: 'page', title: 'contact', href: '/#contact' },
 ];
 
@@ -49,22 +57,28 @@ function fmtDate(s: string) {
 
 <Base cmdItems={cmdItems}>
   <main class="wrap">
-
     <!-- ── hero ──────────────────────────────────── -->
     <section class="hero reveal d1">
       <h1>abe brandsma<span class="cur">&nbsp;</span></h1>
       <div class="sub">ai research engineer · <em>research → engineering → production</em></div>
       <p class="lede">
         I build the bridge between papers and pipelines. Most of what I do is making
-        <em>interesting models</em> survive contact with <em>real systems</em> — invertible
-        neural nets for inverse problems, retrieval &amp; graph systems for messy data, and
-        the unglamorous infrastructure that keeps it all honest.
+        <em>interesting models</em> survive contact with <em>real systems</em> — invertible neural nets
+        for inverse problems, retrieval &amp; graph systems for messy data, and the unglamorous infrastructure
+        that keeps it all honest.
       </p>
       <dl class="meta-grid">
-        <dt>based</dt>  <dd>utrecht, nl · cet/cest</dd>
-        <dt>focus</dt>  <dd>physics-informed ml · retrieval / graphs · vision</dd>
-        <dt>stack</dt>  <dd>pytorch · jax · python · rust (learning)</dd>
-        <dt>now</dt>    <dd class="mid">Wrapping the invertible-nets thesis · poking at GraphRAG variants · sketching a small game on the side.</dd>
+        <dt>based</dt>
+        <dd>utrecht, nl · cet/cest</dd>
+        <dt>focus</dt>
+        <dd>physics-informed ml · retrieval / graphs · vision</dd>
+        <dt>stack</dt>
+        <dd>pytorch · jax · python · rust (learning)</dd>
+        <dt>now</dt>
+        <dd class="mid">
+          Wrapping the invertible-nets thesis · poking at GraphRAG variants · sketching a small game
+          on the side.
+        </dd>
       </dl>
       <div class="status-line">
         <span class="pulse"></span> available · taking conversations through 2026
@@ -78,27 +92,35 @@ function fmtDate(s: string) {
         <div class="right" id="work-count">{WORK.length} of {WORK.length}</div>
       </div>
       <div class="tagbar" role="tablist" aria-label="filter work" id="work-tagbar">
-        {['all', 'research', 'engineering', 'side project'].map(t => (
-          <button aria-pressed={t === 'all' ? 'true' : 'false'} data-filter={t}>{t}</button>
-        ))}
+        {
+          ['all', 'research', 'engineering', 'side project'].map((t) => (
+            <button aria-pressed={t === 'all' ? 'true' : 'false'} data-filter={t}>
+              {t}
+            </button>
+          ))
+        }
       </div>
       <ol class="list" id="work-list">
-        {WORK.map(w => (
-          <li data-tag={w.tag}>
-            <div>
-              <div class="row-title"><a href={`/work/${w.id}`}>{w.title}</a></div>
-              <div class="row-meta">
-                <span class="stat">{w.year}</span>
-                <span class="sep">·</span>
-                <span class="tag">{w.tag}</span>
-                <span class="sep">·</span>
-                <span>{w.venue}</span>
-                <span class="sep">·</span>
-                <span class="dim">{w.note}</span>
+        {
+          WORK.map((w) => (
+            <li data-tag={w.tag}>
+              <div>
+                <div class="row-title">
+                  <a href={`/work/${w.id}`}>{w.title}</a>
+                </div>
+                <div class="row-meta">
+                  <span class="stat">{w.year}</span>
+                  <span class="sep">·</span>
+                  <span class="tag">{w.tag}</span>
+                  <span class="sep">·</span>
+                  <span>{w.venue}</span>
+                  <span class="sep">·</span>
+                  <span class="dim">{w.note}</span>
+                </div>
               </div>
-            </div>
-          </li>
-        ))}
+            </li>
+          ))
+        }
       </ol>
     </section>
 
@@ -106,36 +128,46 @@ function fmtDate(s: string) {
     <section class="block reveal d3" id="writing">
       <div class="h-row">
         <h2>writing &amp; ramblings</h2>
-        <div class="right"><kbd>j</kbd>/<kbd>k</kbd> nav · <kbd>↵</kbd> open · <kbd>/</kbd> search</div>
+        <div class="right">
+          <kbd>j</kbd>/<kbd>k</kbd> nav · <kbd>↵</kbd> open · <kbd>/</kbd> search
+        </div>
       </div>
       <div class="tagbar" role="tablist" aria-label="filter writing" id="post-tagbar">
-        {['all', 'essay', 'research', 'ramble'].map(t => (
-          <button aria-pressed={t === 'all' ? 'true' : 'false'} data-filter={t}>{t}</button>
-        ))}
+        {
+          ['all', 'essay', 'research', 'ramble'].map((t) => (
+            <button aria-pressed={t === 'all' ? 'true' : 'false'} data-filter={t}>
+              {t}
+            </button>
+          ))
+        }
       </div>
       <ol class="list" id="post-list">
-        {posts.map(p => (
-          <li data-tag={p.data.tag} data-slug={p.slug}>
-            <div>
-              <div class="row-title">
-                <a href={`/posts/${p.slug}`}>{p.data.title}</a>
-              </div>
-              <div class="row-meta">
-                <span class="stat">{fmtDate(p.data.date)}</span>
-                <span class="sep">·</span>
-                <span class="tag">{p.data.tag}</span>
-                <span class="sep">·</span>
-                <span>{p.data.reading}</span>
-              </div>
-              <div class="row-expand" aria-hidden="true">
-                <div class="row-expand-inner">
-                  {p.data.excerpt}
-                  <a class="read" href={`/posts/${p.slug}`}>read the whole thing</a>
+        {
+          posts.map((p) => (
+            <li data-tag={p.data.tag} data-slug={p.slug}>
+              <div>
+                <div class="row-title">
+                  <a href={`/posts/${p.slug}`}>{p.data.title}</a>
+                </div>
+                <div class="row-meta">
+                  <span class="stat">{fmtDate(p.data.date)}</span>
+                  <span class="sep">·</span>
+                  <span class="tag">{p.data.tag}</span>
+                  <span class="sep">·</span>
+                  <span>{p.data.reading}</span>
+                </div>
+                <div class="row-expand" aria-hidden="true">
+                  <div class="row-expand-inner">
+                    {p.data.excerpt}
+                    <a class="read" href={`/posts/${p.slug}`}>
+                      read the whole thing
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
-          </li>
-        ))}
+            </li>
+          ))
+        }
       </ol>
     </section>
 
@@ -146,13 +178,13 @@ function fmtDate(s: string) {
         <p>
           I'm Abe — a Dutch AI research engineer based in Utrecht. I work at the seam between
           research and production: physics-informed ML, retrieval &amp; graph systems, and the
-          unglamorous infrastructure that turns a clever idea into something an engineer will
-          sign off on.
+          unglamorous infrastructure that turns a clever idea into something an engineer will sign
+          off on.
         </p>
         <p>
-          Off the clock I build small games at weekend gamejams, read more history of science
-          than is probably reasonable, and tinker with whatever's blinking in the home lab.
-          I'm slow to ship and fast to revise.
+          Off the clock I build small games at weekend gamejams, read more history of science than
+          is probably reasonable, and tinker with whatever's blinking in the home lab. I'm slow to
+          ship and fast to revise.
         </p>
       </div>
       <div class="available">
@@ -160,19 +192,33 @@ function fmtDate(s: string) {
         <ul>
           <li>
             <span class="bullet">▸</span>
-            <span><strong style="font-weight:500">AI research engineer roles</strong> <span class="note">— remote or hybrid, EU timezones</span></span>
+            <span
+              ><strong style="font-weight:500">AI research engineer roles</strong>
+              <span class="note">— remote or hybrid, EU timezones</span></span
+            >
           </li>
           <li>
             <span class="bullet">▸</span>
-            <span><strong style="font-weight:500">ML engineer roles</strong> <span class="note">— research-adjacent teams especially</span></span>
+            <span
+              ><strong style="font-weight:500">ML engineer roles</strong>
+              <span class="note">— research-adjacent teams especially</span></span
+            >
           </li>
           <li>
             <span class="bullet">▸</span>
-            <span><strong style="font-weight:500">collaborations on physics-informed ML, retrieval, vision</strong> <span class="note">— always open</span></span>
+            <span
+              ><strong style="font-weight:500"
+                >collaborations on physics-informed ML, retrieval, vision</strong
+              >
+              <span class="note">— always open</span></span
+            >
           </li>
           <li>
             <span class="bullet">▸</span>
-            <span><strong style="font-weight:500">any kind of collab, really — drop me a line</strong> <span class="note">— low bar</span></span>
+            <span
+              ><strong style="font-weight:500">any kind of collab, really — drop me a line</strong>
+              <span class="note">— low bar</span></span
+            >
           </li>
         </ul>
       </div>
@@ -182,19 +228,29 @@ function fmtDate(s: string) {
     <section class="block reveal d5" id="contact">
       <div class="h-row"><h2>contact</h2></div>
       <div style="font-family:var(--serif);font-size:15px;line-height:1.7;max-width:60ch">
-        Best place to reach me is email — short notes preferred. I read everything;
-        I reply to most things within a week.
+        Best place to reach me is email — short notes preferred. I read everything; I reply to most
+        things within a week.
       </div>
       <div class="contact-links">
-        <span class="dim">email</span>    <a href="mailto:hi@abebrandsma.com">hi@abebrandsma.com</a>
-        <span class="dim">github</span>   <a href="https://github.com/abrandsma" target="_blank" rel="noopener">github.com/abrandsma</a>
-        <span class="dim">linkedin</span> <a href="https://linkedin.com/in/abrandsma" target="_blank" rel="noopener">in/abrandsma</a>
-        <span class="dim">resume</span>   <a href="/cv.pdf">cv.pdf</a>
+        <span class="dim">email</span>
+        <a href="mailto:hi@abebrandsma.com">hi@abebrandsma.com</a>
+        <span class="dim">github</span>
+        <a href="https://github.com/abrandsma" target="_blank" rel="noopener"
+          >github.com/abrandsma</a
+        >
+        <span class="dim">linkedin</span>
+        <a href="https://linkedin.com/in/abrandsma" target="_blank" rel="noopener">in/abrandsma</a>
+        <span class="dim">resume</span>
+        <a href="mailto:hi@abebrandsma.com?subject=Resume%20request">available on request</a>
       </div>
 
       <div class="contact-form">
         <div class="form-label" style="margin-bottom:.7rem">or send a note directly</div>
-        <form id="contact-form" action="https://formsubmit.co/9ad01dbc1e5a4a54fe292f004dd05565" method="POST">
+        <form
+          id="contact-form"
+          action="https://formsubmit.co/9ad01dbc1e5a4a54fe292f004dd05565"
+          method="POST"
+        >
           <input type="hidden" name="_subject" value="portfolio contact" />
           <input type="hidden" name="_captcha" value="false" />
           <input type="hidden" name="_template" value="table" />
@@ -223,24 +279,23 @@ function fmtDate(s: string) {
       <a href="/posts/hello">writing</a>
       <span class="right dim">built with astro · may 2026</span>
     </footer>
-
   </main>
 
   <script>
     /* ── work tag filter ── */
     const workTagbar = document.getElementById('work-tagbar');
-    const workList   = document.getElementById('work-list');
-    const workCount  = document.getElementById('work-count');
-    const totalWork  = workList?.querySelectorAll('li').length ?? 0;
+    const workList = document.getElementById('work-list');
+    const workCount = document.getElementById('work-count');
+    const totalWork = workList?.querySelectorAll('li').length ?? 0;
 
     workTagbar?.addEventListener('click', (e) => {
-      const btn = (e.target instanceof Element) ? e.target.closest('button') : null;
+      const btn = e.target instanceof Element ? e.target.closest('button') : null;
       if (!btn) return;
       const filter = btn.dataset.filter ?? 'all';
-      workTagbar.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', 'false'));
+      workTagbar.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', 'false'));
       btn.setAttribute('aria-pressed', 'true');
       let visible = 0;
-      workList?.querySelectorAll('li').forEach(li => {
+      workList?.querySelectorAll('li').forEach((li) => {
         const show = filter === 'all' || (li instanceof HTMLElement && li.dataset.tag === filter);
         li.classList.toggle('hidden', !show);
         if (show) visible++;
@@ -250,16 +305,16 @@ function fmtDate(s: string) {
 
     /* ── post tag filter ── */
     const postTagbar = document.getElementById('post-tagbar');
-    const postList   = document.getElementById('post-list');
+    const postList = document.getElementById('post-list');
 
     postTagbar?.addEventListener('click', (e) => {
-      const btn = (e.target instanceof Element) ? e.target.closest('button') : null;
+      const btn = e.target instanceof Element ? e.target.closest('button') : null;
       if (!btn) return;
       const filter = btn.dataset.filter ?? 'all';
-      postTagbar.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', 'false'));
+      postTagbar.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', 'false'));
       btn.setAttribute('aria-pressed', 'true');
-      postList?.querySelectorAll('li').forEach(li => {
-        const hide = filter !== 'all' && (li instanceof HTMLElement) && li.dataset.tag !== filter;
+      postList?.querySelectorAll('li').forEach((li) => {
+        const hide = filter !== 'all' && li instanceof HTMLElement && li.dataset.tag !== filter;
         li.classList.toggle('hidden', hide);
         if (hide) li.classList.remove('open');
       });
@@ -281,7 +336,7 @@ function fmtDate(s: string) {
     }
 
     postList?.addEventListener('click', (e) => {
-      const link = (e.target instanceof Element) ? e.target.closest('.row-title a') : null;
+      const link = e.target instanceof Element ? e.target.closest('.row-title a') : null;
       if (!link) return;
       const li = link.closest('li');
       if (!li) return;
@@ -321,9 +376,9 @@ function fmtDate(s: string) {
     });
 
     /* ── contact form (AJAX) ── */
-    const form      = document.getElementById('contact-form') as HTMLFormElement | null;
+    const form = document.getElementById('contact-form') as HTMLFormElement | null;
     const submitBtn = document.getElementById('contact-submit') as HTMLButtonElement | null;
-    const statusEl  = document.getElementById('form-status');
+    const statusEl = document.getElementById('form-status');
 
     form?.addEventListener('submit', async (e) => {
       e.preventDefault();

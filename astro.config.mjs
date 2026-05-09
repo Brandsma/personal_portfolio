@@ -32,10 +32,18 @@ export default defineConfig({
   },
   markdown: {
     remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeKatex, rehypeRemovePreTabindex, [rehypeExternalLinks, { target: '_blank', rel: [] }]],
+    rehypePlugins: [
+      rehypeKatex,
+      rehypeRemovePreTabindex,
+      [rehypeExternalLinks, { target: '_blank', rel: [] }],
+    ],
   },
   mdx: {
     remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeKatex, rehypeRemovePreTabindex, [rehypeExternalLinks, { target: '_blank', rel: [] }]],
+    rehypePlugins: [
+      rehypeKatex,
+      rehypeRemovePreTabindex,
+      [rehypeExternalLinks, { target: '_blank', rel: [] }],
+    ],
   },
 });

@@ -5,27 +5,23 @@ import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
   const items = await getCollection('work');
-  return items.map(item => ({ params: { slug: item.slug } }));
+  return items.map((item) => ({ params: { slug: item.slug } }));
 }
 
 const { slug } = Astro.params;
 const allWork = await getCollection('work');
-const item = allWork.find(w => w.slug === slug);
+const item = allWork.find((w) => w.slug === slug);
 if (!item) return Astro.redirect('/');
 
 const { Content } = await item.render();
 
 const cmdItems = [
-  ...allWork.map(w => ({ kind: 'work', title: w.data.title, href: `/work/${w.slug}` })),
+  ...allWork.map((w) => ({ kind: 'work', title: w.data.title, href: `/work/${w.slug}` })),
   { kind: 'page', title: 'home', href: '/' },
 ];
 ---
 
-<Base
-  title={`${item.data.title} · abe brandsma`}
-  description={item.data.note}
-  cmdItems={cmdItems}
->
+<Base title={`${item.data.title} · abe brandsma`} description={item.data.note} cmdItems={cmdItems}>
   <main class="work-wrap">
     <div class="crumbs reveal d1">
       <a href="/">~</a><span class="sep">/</span>
@@ -49,7 +45,9 @@ const cmdItems = [
       </div>
 
       <div style="margin-top:2.5rem">
-        <a href="/#work" style="font-family:var(--mono);font-size:13px;color:var(--ink-2)">← back to work</a>
+        <a href="/#work" style="font-family:var(--mono);font-size:13px;color:var(--ink-2)"
+          >← back to work</a
+        >
       </div>
     </article>
   </main>

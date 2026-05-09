@@ -1,12 +1,12 @@
 ---
-title: "physics-informed invertible neural networks for hydrodynamic imaging"
-year: "2023"
-tag: "research"
-venue: "msc thesis"
-note: "inverse problems · normalizing flows · pdes"
+title: 'physics-informed invertible neural networks for hydrodynamic imaging'
+year: '2023'
+tag: 'research'
+venue: 'msc thesis'
+note: 'inverse problems · normalizing flows · pdes'
 ---
 
-> **Note** *The work presented here is an attempt at making a difficult topic easily understandable and does not represent proper scientific rigour in every aspect. For scientific rigour, I would like to refer you to the [original thesis](https://drive.google.com/file/d/1uPJ5zROuia0zzh2L6LjGPVb0thmao_Tc/view?usp=sharing).*
+> **Note** _The work presented here is an attempt at making a difficult topic easily understandable and does not represent proper scientific rigour in every aspect. For scientific rigour, I would like to refer you to the [original thesis](https://drive.google.com/file/d/1uPJ5zROuia0zzh2L6LjGPVb0thmao_Tc/view?usp=sharing)._
 
 A project where I spent the better part of a year researching fish, physics and novel neural network architectures. The context is as follows: a small sphere moves silently through the water while an array of eight sensors sits motionless on the bottom, quietly listening. Not listening for sound, but for something far more subtle: the movement of water itself as it flows around the moving object.
 
@@ -42,7 +42,6 @@ $$
 \phi(x,y,z) = (a^3/2) \times \frac{(\vec{W} \cdot \vec{r})}{ \lvert\vec{r}\rvert^3}
 $$
 
-
 where $\vec{r}$ = [x,y,z] is the position vector from the sphere's center. This equation is remarkably elegant – it says that the flow disturbance depends on the cube of the sphere size ($a^3$), scales linearly with velocity ($\vec{W}$), and falls off as the cube of distance ($\vert\vec{r}\vert^3$).
 
 But here's where the mathematics show us something insightful. This velocity potential must satisfy **[Laplace's equation](https://en.wikipedia.org/wiki/Laplace%27s_equation)**:
@@ -59,20 +58,20 @@ For our sensor array positioned along the x-axis, we can derive the specific vel
 def compute_wavelets(rho):
     """
     Compute the three fundamental wavelets for lateral line sensing
-    
+
     Args:
         rho: normalized sensor position (s-x)/y where s is sensor position,
              (x,y) is sphere position
-    
+
     Returns:
         even_wavelet, odd_wavelet, navelet
     """
     denominator = (1 + rho**2)**(5/2)
-    
+
     even_wavelet = (1 - 2*rho**2) / denominator      # Ψₑ: parallel motion
-    odd_wavelet = -3*rho / denominator               # Ψₒ: perpendicular motion  
+    odd_wavelet = -3*rho / denominator               # Ψₒ: perpendicular motion
     navelet = (2 - rho**2) / denominator             # Ψₙ: directional info
-    
+
     return even_wavelet, odd_wavelet, navelet
 ```
 
@@ -83,11 +82,10 @@ The velocity components our sensors actually measure combine these wavelets in s
 $$
 v_x = \frac{a^3 \left\lVert w \right\rVert}{2d^3}(\Psi_o \sin{\theta} - \Psi_e \cos{\theta}),
 $$
+
 $$
 v_y = \frac{a^3 \left\lVert w \right\rVert}{2d^3}(\Psi_n \sin{\theta} + \Psi_o \cos{\theta}).
 $$
-
-
 
 Here, $d$ is the distance from sphere to sensor array, and $\theta$ is the angle of motion. Notice how the sphere size appears cubed ($a^3$) – this means a sphere twice as large creates eight times the signal. The distance also appears cubed in the denominator, so doubling the distance reduces the signal by a factor of eight. This cubic relationship makes detection of small, distant objects extraordinarily challenging.
 
@@ -96,29 +94,29 @@ Here, $d$ is the distance from sphere to sensor array, and $\theta$ is the angle
 The image shows a graphical representation of the wavelet family (a) and the velocity profiles, vx (b) and vy (c) for a sphere of size 10 (mm) moving parallel to the array at a constant speed of 10 mm/s. This is the concatenated representation of 1024 uniformly spaced sensors between -200 mm and 200 mm.
 
 ```python
-def compute_velocity_profiles(sphere_pos, sphere_velocity, sphere_radius, 
+def compute_velocity_profiles(sphere_pos, sphere_velocity, sphere_radius,
                             sensor_positions, angle):
     """
     Compute velocity profiles at sensor locations for a moving sphere
     """
     x, y = sphere_pos
     sensors = np.array(sensor_positions)
-    
+
     # Compute normalized positions for each sensor
     rho = (sensors - x) / y
     distance = np.sqrt(x**2 + y**2)
-    
+
     # Get wavelets for all sensor positions
     psi_e, psi_o, psi_n = compute_wavelets(rho)
-    
+
     # Velocity magnitude scaling factor
     velocity_magnitude = np.linalg.norm(sphere_velocity)
     scale_factor = (sphere_radius**3 * velocity_magnitude) / (2 * distance**3)
-    
+
     # Compute velocity components
     v_x = scale_factor * (psi_o * np.sin(angle) - psi_e * np.cos(angle))
     v_y = scale_factor * (psi_n * np.sin(angle) + psi_o * np.cos(angle))
-    
+
     return v_x, v_y
 ```
 
@@ -165,12 +163,12 @@ class LateralLineLSTM(tf.keras.Model):
         super().__init__()
         self.window_size = window_size
         self.lstm = tf.keras.layers.LSTM(
-            hidden_units, 
+            hidden_units,
             activation='tanh',
             return_sequences=False
         )
         self.dense = tf.keras.layers.Dense(3)  # x, y, theta
-        
+
     def call(self, inputs):
         # inputs shape: (batch_size, time_steps, features)
         # features = 16 (8 sensors × 2 velocity components)
@@ -192,10 +190,10 @@ def coupling_layer_forward(x1, x2, scale_net, translation_net):
     """
     s = scale_net(x1)      # Scale parameters
     t = translation_net(x1)  # Translation parameters
-    
+
     y1 = x1                           # Pass through unchanged
     y2 = x2 * tf.exp(s) + t          # Affine transformation
-    
+
     return y1, y2
 
 def coupling_layer_inverse(y1, y2, scale_net, translation_net):
@@ -204,10 +202,10 @@ def coupling_layer_inverse(y1, y2, scale_net, translation_net):
     """
     s = scale_net(y1)      # Same scale network
     t = translation_net(y1)  # Same translation network
-    
+
     x1 = y1                           # Direct recovery
     x2 = (y2 - t) * tf.exp(-s)       # Exact inverse
-    
+
     return x1, x2
 ```
 
@@ -230,7 +228,7 @@ class LateralLineINN(tf.keras.Model):
     def __init__(self, num_coupling_layers=4, hidden_dims=64):
         super().__init__()
         self.coupling_layers = []
-        
+
         for i in range(num_coupling_layers):
             # Each coupling layer has its own scale and translation networks
             scale_net = tf.keras.Sequential([
@@ -240,7 +238,7 @@ class LateralLineINN(tf.keras.Model):
                 tf.keras.layers.Dense(hidden_dims, activation='relu'),
                 tf.keras.layers.Dense(16)  # Output dim for half the features
             ])
-            
+
             translation_net = tf.keras.Sequential([
                 tf.keras.layers.Dense(hidden_dims, activation='relu'),
                 tf.keras.layers.Dense(hidden_dims, activation='relu'),
@@ -248,16 +246,16 @@ class LateralLineINN(tf.keras.Model):
                 tf.keras.layers.Dense(hidden_dims, activation='relu'),
                 tf.keras.layers.Dense(16)  # Output dim for half the features
             ])
-            
+
             self.coupling_layers.append((scale_net, translation_net))
-    
+
     def forward(self, x):
         # x: object properties [x, y, theta] + zero padding
         for scale_net, translation_net in self.coupling_layers:
             x = self.coupling_step_forward(x, scale_net, translation_net)
             x = self.permute(x)  # Permute dimensions between layers
         return x  # sensor readings [v_x, v_y] + latent variables
-    
+
     def inverse(self, y):
         # y: sensor readings + latent variables
         for scale_net, translation_net in reversed(self.coupling_layers):
@@ -271,10 +269,10 @@ But there's a subtlety here. Real inverse problems are often ill-posed, meaning 
 $$
 \text{Forward}: (x, y, \theta) + \text{zero padding} \rightarrow (v_x, v_y) + \text{latent variables}
 $$
+
 $$
 \text{Inverse}: (v_x, v_y) + \text{latent variables} \rightarrow (x, y, \theta) + \text{recovered padding}
 $$
-
 
 The latent variables capture the "missing information" needed to make the inverse mapping unique. During training, we ensure these latent variables follow a standard [Gaussian distribution](https://en.wikipedia.org/wiki/Normal_distribution) using [Maximum Mean Discrepancy (MMD)](https://en.wikipedia.org/wiki/Kernel_embedding_of_distributions#Maximum_mean_discrepancy) loss.
 
@@ -299,18 +297,18 @@ def physics_loss(x, y, v_x, v_y, W_x, W_y):
         tape.watch([x, y])
         # Predict velocities from current position
         v_x_pred, v_y_pred = model(tf.stack([x, y], axis=1))
-    
+
     # Compute gradients
     dvx_dx = tape.gradient(v_x_pred, x)
     dvy_dy = tape.gradient(v_y_pred, y)
-    
+
     # Physics constraint from Laplace equation
     distance_squared = x**2 + y**2
     physics_term = 3 * (W_x * x + W_y * y) / (distance_squared**(5/2))
-    
+
     # Residual should be zero for physically consistent flows
     residual = dvx_dx + dvy_dy + physics_term
-    
+
     return tf.reduce_mean(tf.square(residual))
 ```
 
@@ -330,27 +328,27 @@ def total_loss(x_true, y_true, theta_true, v_x_true, v_y_true):
     # Forward pass: (x,y,θ) → (v_x,v_y,z)
     forward_output = model.forward(tf.stack([x_true, y_true, theta_true], axis=1))
     v_x_pred, v_y_pred, z_pred = tf.split(forward_output, [8, 8, 32], axis=1)
-    
+
     # Backward pass: (v_x,v_y,z) → (x,y,θ)
     backward_input = tf.concat([v_x_true, v_y_true, z_pred], axis=1)
     backward_output = model.inverse(backward_input)
     x_recon, y_recon, theta_recon = tf.split(backward_output, [1, 1, 1], axis=1)
-    
+
     # Data fitting losses
-    forward_loss = tf.reduce_mean(tf.square(v_x_pred - v_x_true) + 
+    forward_loss = tf.reduce_mean(tf.square(v_x_pred - v_x_true) +
                                  tf.square(v_y_pred - v_y_true))
-    backward_loss = tf.reduce_mean(tf.square(x_recon - x_true) + 
-                                  tf.square(y_recon - y_true) + 
+    backward_loss = tf.reduce_mean(tf.square(x_recon - x_true) +
+                                  tf.square(y_recon - y_true) +
                                   tf.square(theta_recon - theta_true))
-    
+
     # Physics constraint loss
-    physics_loss_val = physics_loss(x_true, y_true, v_x_pred, v_y_pred, 
+    physics_loss_val = physics_loss(x_true, y_true, v_x_pred, v_y_pred,
                                    W_x_true, W_y_true)
-    
+
     # Latent distribution loss (MMD to enforce Gaussian distribution)
     z_target = tf.random.normal(tf.shape(z_pred))
     latent_loss = maximum_mean_discrepancy(z_pred, z_target)
-    
+
     return forward_loss + backward_loss + 0.1 * physics_loss_val + 0.01 * latent_loss
 ```
 
@@ -370,10 +368,10 @@ def extract_speed(positions, timestamps):
     # Compute displacement vectors
     displacements = positions[1:] - positions[:-1]
     time_deltas = timestamps[1:] - timestamps[:-1]
-    
+
     # Instantaneous speeds
     speeds = np.linalg.norm(displacements, axis=1) / time_deltas
-    
+
     # Average speed over trajectory (robust to noise)
     return np.mean(speeds)
 
@@ -383,28 +381,28 @@ def extract_volume(v_x, v_y, position, angle, speed, sensor_positions):
     """
     x, y = position
     best_estimates = []
-    
+
     for i, sensor_pos in enumerate(sensor_positions):
         # Skip sensors with weak signals (low SNR)
         if abs(v_x[i]) < 1e-6:
             continue
-            
+
         # Compute normalized position for this sensor
         rho = (sensor_pos - x) / y
         distance = np.sqrt(x**2 + y**2)
-        
+
         # Get wavelet values
         psi_e, psi_o, psi_n = compute_wavelets(rho)
-        
+
         # Expected velocity component based on wavelets
         expected_v_x = (psi_o * np.sin(angle) - psi_e * np.cos(angle))
-        
+
         if abs(expected_v_x) > 1e-6:  # Avoid division by zero
             # Solve for radius: v_x = (a³||W||)/(2d³) × wavelet_combo
             radius_cubed = (2 * distance**3 * v_x[i]) / (speed * expected_v_x)
             radius = np.cbrt(abs(radius_cubed))
             best_estimates.append(radius)
-    
+
     return np.median(best_estimates) if best_estimates else 0
 ```
 

@@ -5,24 +5,28 @@ import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
-  return posts.map(post => ({ params: { slug: post.slug } }));
+  return posts.map((post) => ({ params: { slug: post.slug } }));
 }
 
 const { slug } = Astro.params;
 const allPosts = (await getCollection('posts')).sort(
-  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
 );
 
-const post = allPosts.find(p => p.slug === slug);
+const post = allPosts.find((p) => p.slug === slug);
 if (!post) return Astro.redirect('/');
 
 const { Content } = await post.render();
 
-const idx  = allPosts.findIndex(p => p.slug === slug);
+const idx = allPosts.findIndex((p) => p.slug === slug);
 const prev = idx > 0 ? allPosts[idx - 1] : null;
 const next = idx < allPosts.length - 1 ? allPosts[idx + 1] : null;
 
-const cmdItems = allPosts.map(p => ({ kind: 'writing', title: p.data.title, href: `/posts/${p.slug}` }));
+const cmdItems = allPosts.map((p) => ({
+  kind: 'writing',
+  title: p.data.title,
+  href: `/posts/${p.slug}`,
+}));
 
 function fmtDate(s: string) {
   return new Date(s)
@@ -61,28 +65,32 @@ function fmtDate(s: string) {
       </div>
 
       <nav class="post-nav" aria-label="post navigation">
-        {prev ? (
-          <a class="prev" href={`/posts/${prev.slug}`}>
-            <span class="nav-label">← previous</span>
-            <span>{prev.data.title}</span>
-          </a>
-        ) : (
-          <a class="prev" href="/#writing">
-            <span class="nav-label">← back</span>
-            <span>writing index</span>
-          </a>
-        )}
-        {next ? (
-          <a class="next" href={`/posts/${next.slug}`}>
-            <span class="nav-label">next →</span>
-            <span>{next.data.title}</span>
-          </a>
-        ) : (
-          <a class="next" href="/#writing">
-            <span class="nav-label">up →</span>
-            <span>writing index</span>
-          </a>
-        )}
+        {
+          prev ? (
+            <a class="prev" href={`/posts/${prev.slug}`}>
+              <span class="nav-label">← previous</span>
+              <span>{prev.data.title}</span>
+            </a>
+          ) : (
+            <a class="prev" href="/#writing">
+              <span class="nav-label">← back</span>
+              <span>writing index</span>
+            </a>
+          )
+        }
+        {
+          next ? (
+            <a class="next" href={`/posts/${next.slug}`}>
+              <span class="nav-label">next →</span>
+              <span>{next.data.title}</span>
+            </a>
+          ) : (
+            <a class="next" href="/#writing">
+              <span class="nav-label">up →</span>
+              <span>writing index</span>
+            </a>
+          )
+        }
       </nav>
     </article>
   </main>
@@ -119,17 +127,21 @@ function fmtDate(s: string) {
 
     // Capture-phase listener: fires before the anchor's default navigation,
     // so e.preventDefault() actually stops the link from opening.
-    document.addEventListener('click', (e) => {
-      const target = e.target as Element;
-      if (!(target instanceof HTMLImageElement)) return;
-      if (!target.closest('article .body')) return;
-      e.preventDefault();
-      e.stopPropagation();
-      openModal(target.src, target.alt);
-    }, /* capture */ true);
+    document.addEventListener(
+      'click',
+      (e) => {
+        const target = e.target as Element;
+        if (!(target instanceof HTMLImageElement)) return;
+        if (!target.closest('article .body')) return;
+        e.preventDefault();
+        e.stopPropagation();
+        openModal(target.src, target.alt);
+      },
+      /* capture */ true,
+    );
 
     // ── External links → new tab ───────────────────
-    document.querySelectorAll<HTMLAnchorElement>('article .body a').forEach(a => {
+    document.querySelectorAll<HTMLAnchorElement>('article .body a').forEach((a) => {
       if (a.querySelector('img')) return; // image links handled above
       try {
         const url = new URL(a.href);
@@ -137,7 +149,9 @@ function fmtDate(s: string) {
           a.setAttribute('target', '_blank');
           a.setAttribute('rel', 'noopener noreferrer');
         }
-      } catch { /* relative or invalid href — leave alone */ }
+      } catch {
+        /* relative or invalid href — leave alone */
+      }
     });
 
     // ── Keyboard navigation ────────────────────────
@@ -145,14 +159,17 @@ function fmtDate(s: string) {
       if ((document.activeElement?.tagName ?? '').toLowerCase() === 'input') return;
       if (document.getElementById('cmd')?.classList.contains('open')) return;
       if (e.key === 'Escape') {
-        if (modal.classList.contains('open')) { closeModal(); return; }
+        if (modal.classList.contains('open')) {
+          closeModal();
+          return;
+        }
         location.href = '/#writing';
         return;
       }
       if (modal.classList.contains('open')) return;
       const prevEl = document.querySelector<HTMLAnchorElement>('.post-nav .prev');
       const nextEl = document.querySelector<HTMLAnchorElement>('.post-nav .next');
-      if ((e.key === 'h' || e.key === 'ArrowLeft')  && prevEl?.href) location.href = prevEl.href;
+      if ((e.key === 'h' || e.key === 'ArrowLeft') && prevEl?.href) location.href = prevEl.href;
       if ((e.key === 'l' || e.key === 'ArrowRight') && nextEl?.href) location.href = nextEl.href;
     });
   </script>
