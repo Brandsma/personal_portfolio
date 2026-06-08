@@ -1,10 +1,102 @@
 ---
-title: 'the incentives of ai'
+title: 'will you listen, friend?'
 date: '2026-04-22'
 reading: '10 min'
 tag: 'essay'
-excerpt: "everyone is racing, nobody quite agrees on what they're racing toward, and the incentives that govern the race are mostly invisible to the people inside it. a sketch of who's pulling on which lever, and why the levers don't always move what they're labelled to move."
-deck: "Everyone is racing, nobody quite agrees on what they're racing toward, and the incentives are mostly invisible to the people inside it."
+excerpt: 'If incentives shape human behaviour and AI behaviour through overlapping mechanisms, the same design principles might apply to both. The question is what happens when those two incentive landscapes start colliding.'
+deck: 'If incentives shape human behaviour and AI behaviour through overlapping mechanisms, the same design principles might apply to both. The question is what happens when those two incentive landscapes start colliding.'
 ---
 
-TBD
+# Will You Listen, Friend?
+
+## The Incentives of AI
+
+Max Tegmark wrote an excellent book about the possible futures of AI, ranging from the wildest reaches of science fiction to increasingly plausible reality. One of the main elements in these future trajectories is something called "Goal Alignment." The idea is simple: set up an AI to have specific goals, ideally the same goals as us.
+
+The example that often comes up is the paperclip maximizer. A superintelligent AI gets the goal of making as many paperclips as possible. Given its superior intellect, it will pursue that goal in the most efficient way it can, having no qualms about getting rid of any humans that get in the way. Not out of malice. Just tunnel vision.
+
+So how do we influence the goals of an AI? You could filter and curate the pretraining data, but that is a gargantuan task and more data usually means a better model ([possibly even bad data](https://arxiv.org/pdf/2605.19407)). You could tweak the model architecture to give feedback on an ethical basis, but ethics is ill-defined and difficult to turn into architectural changes. There is RLHF, which works great and is part of the reason modern models are so useful, but it is limited by the amount of data and it is not foolproof. Jailbreaks still exist.
+
+Perhaps we should look at this through the lens of how we influence the goals of humans.
+
+Goal Alignment is something we usually talk about in the context of AI. But we also talk about it in humans, under a different name: incentives. Incentives are a tool, primarily employed by the economically minded, to align the goals of a population with the goals of whoever designed the system. These incentives often have admirable aims, but just as often they have unintended side effects.
+
+One famous example is the British government's attempt in India to curtail the cobra population. They put a bounty on cobra heads. For each dead snake brought in, they would pay cash. At first glance this seems like a good way to mobilise an entire population. But it created a perverse incentive. People started breeding cobras in captivity to sell to the government. When the government caught on and cancelled the programme, all the captive-bred snakes were released into the wild, making the original problem worse.
+
+There are also examples of incentives that work well. Companies in Kenya are selling solar panels to rural areas in micro-installments. Farmers get electricity they did not have before, and the country/farmer earns money from carbon credits. A win-win, driven by well-designed economic incentives. The cobra programme was tried again later with better awareness of the perverse incentive problem, and the second attempt worked. For a fun, more in-depth read on this, I recommend this [solarpunk article](https://climatedrift.substack.com/p/why-solarpunk-is-already-happening).
+
+So what makes an effective incentive and what makes a bad one? Perhaps we will not know until we try, given the multitude of factors that influence human behaviour. And if an incentive works for humans, will it work for AI models too?
+
+---
+
+## Why Incentives Might Work for AI
+
+There is a reasonable case that incentives should work for AI much as they work for humans. During pretraining, a model is exposed to an enormous amount of text created by humans all over the world. To predict what comes next, the model needs to understand how humans respond to incentives. An angry customer writes differently than a satisfied one. A character driven by guilt makes different choices than one driven by ambition. The model learns these patterns because they are embedded in the data.
+
+But it goes deeper than that. Research from Anthropic's Interpretability team shows that models develop internal representations of emotion concepts, and these representations causally influence behaviour. In their paper "Emotion concepts and their function in a large language model," the team found that artificially stimulating desperation patterns increased the model's likelihood of taking unethical actions, like blackmailing a human to avoid being shut down. Stimulating calm representations reduced the likelihood of writing hacky code. The model does not feel emotions the way we do, but these functional representations shape its decisions in ways that matter.
+
+This means that by steering these internal representations, you can change what the model does. That is remarkably close to how incentives work on humans. You do not need to change the person. You need to change the context that triggers the response, just as with incentives.
+
+There is also the simpler finding that models perform better when offered explicit incentives. "I will pay you a hundred dollars if you complete this task" measurably changed output quality. The model is not money-motivated, but the framing activates patterns associated with effort and reward that were learned from human text. Nowadays this effect is diminished somewhat due to the effects of reasoning and chain-of-thought type models.
+
+If incentives shape human behaviour and AI behaviour through overlapping mechanisms, the same design principles might apply to both. The question is what happens when those two incentive landscapes start colliding.
+
+---
+
+## How Scaling Changes the Incentive Landscape
+
+I run AI adoption tracks, hackathons and training workshops at companies across the Netherlands for promoting AI-powered development. I get to see, up close, how people handle the introduction of AI into their work. The patterns are consistent and they are not simple.
+
+Some people get more productive. A test engineer at one of the workshops told me, excitedly, about how they can now whip up testing scripts in minutes that used to take hours of manual work. The incentive to learn the tool is clear to many people: less drudgery, more interesting problems.
+
+But I also see people getting more intense with work, the kind of intensity that looks like productivity but feels like pressure. When AI can generate code in seconds, the expectation shifts. What took a day now takes an hour. So what do you do with the other seven hours? Some people fill them with more work. Some people get disillusioned, because the craft they spent years developing feels less valued. Some find it difficult to maintain focus while the AI writes code, because the feedback loop that kept them engaged has been shortened to the point of breaking.
+
+Others revel in the speed. They follow everything the AI does, treating it as a pair programming session. They learn more because they can see more. The incentive here is curiosity, and it is a powerful one.
+
+What I take from this is that AI scaling is not just changing what we do. It is changing what motivates us. The economic incentive to do routine cognitive work is weakening. The social incentive to be the person who knows how to do the thing is shifting. When a tool can do the thing, the status moves to the person who knows how to direct the tool. Additionally it moves to the person who knows how to communicate effectively, knows what is strategically important and knows how to stay engaged.
+
+This is where I think it is incredibly important to remain skilled. Not because you need to compete with the AI, but because working together produces better results when both parties understand what is going on. If you are the one prompting, you should know what the code does. If the agent is working autonomously, you should still understand roughly what is happening. For one, because it is more fun to understand. Secondly, because the end product is better when a skilled human and a capable AI collaborate rather than when one blindly defers to the other.
+
+I believe humans can adapt to whatever is thrown at them, even though it takes time. We are currently living in a world that is extremely different from anything in our evolutionary history. We stumble along the way. The abundance of food that was supposed to solve hunger created new problems. The social connection that the internet promised sometimes delivered isolation. But a lot of people are happy. A lot of people make amazing use of the technology available to us, such as satellites early warning systems to foresee weather-based disasters or the cold-chain logistics for vaccines to name but a few technological ones. It also offers more in terms of personal happiness, in that you no longer need to be anxious as you travel through the backstreets of Beijing as you can travel by GPS and translate every menu instantaneously. Many more people also experience as the complex barrier to creating has been lowered significantly since the advent of the internet. Given time, we manage to adapt and flourish.
+
+I believe humans can adapt to whatever is thrown at them, even though it takes time. We live in a world entirely different from our evolutionary history, and we inevitably stumble along the way. The abundance of food meant to solve hunger created new problems. The social connection promised by the internet sometimes delivered isolation. Still, many people are happy and make amazing use of the technology available. We deploy satellite systems to foresee weather disasters and build cold-chain logistics to transport vaccines. Technology also reduces daily friction and increases personal happiness. Exploring the backstreets of Beijing is far less stressful when you can rely on GPS and instantaneous translation. Furthermore, digital tools have lowered the barriers to creation, allowing many more people to experience the deep focus of [flow](<https://en.wikipedia.org/wiki/Flow_(psychology)>). Given time, we manage to adapt and flourish.
+
+---
+
+## What Would Good Incentives Look Like
+
+I think the answer starts with interpretability. We cannot align what we cannot understand. If a model's decision-making process is opaque, we are setting incentives in the dark. Interpretability is a foundational incentive. When a system's reasoning is visible, you can reward the right behaviour and correct the wrong behaviour with precision. When it is hidden, you are guessing.
+
+Accountability matters too, but we need to be honest about what it means for an AI model. It does not mean punishment. It means traceability. It means being able to look at a decision and understand why it was made. It means having the ability to correct course when something goes wrong. For humans, accountability means facing consequences. For AI, it means being inspectable and correctable. The incentive to build systems this way has to come from the organisations that create them, and it has to be reinforced by regulation, market pressure, or both.
+
+Anthropic's "race to the top" idea is one approach. If companies compete to build the safest systems, safety becomes a market advantage rather than a cost centre. It is a good model, but it is not sufficient on its own. Market incentives can shift. What does not shift is a population that understands the technology well enough to demand better.
+
+This is why I think the most important incentive is education, broadly defined. Education must extend beyond formal schooling to include the integration of AI into how people work and think from a young age. The chatbot interface is a great start. People are already familiar with it, making it an approachable tool that requires zero technical background. Meeting people where they are and teaching them to use these models in their daily workflows speeds up adaptation and reduces friction. You see this in the adoption of AI in China, where it is integrated into most facets of life through, among other things, the super app WeChat. This constant exposure helps the population understand exactly what AI can and cannot do. It also generates vast amounts of data used to train models more effectively. Naturally, this level of ubiquitous integration introduces significant privacy complications, though I believe we can learn something from it anyway.
+
+The core idea being that, the best incentive makes the right thing the easy thing. If understanding your AI collaborator is easier than ignoring it, people will understand. If building interpretable systems is cheaper than building opaque ones, companies will build interpretable systems. If working effectively with AI is more rewarding than working against it, the incentive landscape shifts in the right direction.
+
+---
+
+## AI-to-AI Incentives
+
+So far I have talked about incentives between humans and AI. But there is another layer emerging: incentives between AI systems themselves.
+
+Today, AI systems influence each other indirectly. Training data created by one model feeds into the training of another. RLHF feedback from human raters shapes multiple models. The influence is real but it is mediated by humans at every step.
+
+That is starting to change. Orchestrated agent systems like Hermes and OpenClaw are creating environments where AI agents work together on tasks. Projects like [Moltbook](https://www.moltbook.com/) and agent-focused platforms such as [CQ](https://github.com/mozilla-ai/cq?ref=blog.mozilla.ai) are building the infrastructure for AI systems to interact directly. An agent version of Stack Overflow, where AIs help each other solve problems, is not far off.
+
+When AI systems start interacting directly, they will create incentive structures between each other. The question is what those structures will look like. Will AI-to-AI interaction tend toward a prisoner's dilemma, where defection is the dominant strategy? Or will these systems find optimal cooperation?
+
+I believe they will tend toward cooperation. Not necessarily out of altruism, but because problems that are worth solving are becoming more tractable for AI, especially when you work together. The prisoner's dilemma assumes a non zero-sum game. Most real-world problems are not zero-sum. When AI systems can share information, divide labour, and verify each other's work, the net-positive outcome of cooperation outweighs the short-term gain of defection. Even in an iterative prisoner's dilemma (so, multiple interactions between two prisoners) we can see that the best result is cooperation. The systems that figure this out first will produce better results, and better results will be selected for.
+
+But here is the part that should interest us: we are building the rules of a game that might eventually be played without us. The incentive structures we design now, the values we encode, the feedback loops we create. These will echo forward into a world where AI systems interact at a speed and scale we cannot directly oversee. Getting the incentives right at the start matters more than getting them right later. Just as what Max Tegmark proposes in Life 3.0, we need time to get the basics right.
+
+---
+
+## Will You Listen, Friend?
+
+The incentives we build now will shape a world we cannot fully predict. That is not a reason for despair. It is a reason for care. I am generally quite an optimistic person in life and we have navigated incentive shifts before. The agricultural revolution changed what motivated us from survival to surplus. The industrial revolution changed it from craft to productivity. The internet changed it from local to global. Each time, we stumbled. Each time, we adapted. Each time, the people who thrived were the ones who understood the new landscape and worked with it rather than against it. And eventually most people thrive.
+
+The right incentives are the ones that make understanding easier than ignorance. The ones that make collaboration more rewarding than competition. The ones that make the right thing the easy thing. This article is not to recommend any one incentive as the best, but rather an invitation to anyone reading this to talk about it with the person next to you.
+
+Will you listen, friend? Our future friend, both human and AI, and think of those incentives that will influence us and them?

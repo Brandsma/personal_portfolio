@@ -41,6 +41,6 @@
     "prettier-plugin-astro": "^0.14.1",
     "simple-git-hooks": "^2.13.1",
     "start-server-and-test": "^3.0.2",
-    "vitest": "^4.1.6"
+    "vitest": "^4.1.8"
   }
 }

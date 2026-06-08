@@ -7,10 +7,8 @@ note: 'historical document analysis · low-data vision'
 order: 2
 ---
 
-A research project applying computer vision to one of the most studied manuscript corpora in history. The Dead Sea Scrolls present a genuinely hard low-data problem: there are a handful of scribes, a handful of surviving documents, and enormous historical and religious stakes attached to the attribution questions.
+This project is an end to end handwriting analysis pipeline for Dead Sea Scroll images. It takes binarized manuscript images, breaks them into lines and characters, recognizes each character, classifies writing style, and writes per-pageoutput files with transcribed text plus a style label.
 
-The task was twofold: handwriting recognition (transcription of damaged characters) and scribe attribution (which scribe wrote which section). The challenge is extreme data scarcity. You can't augment your way to a large dataset when the source material is two millennia old.
+Technically, the pipeline combines several tools and models. Line segmentation uses a MATLAB implementation of multi-skew line extraction with anisotropic Gaussian filtering. Character segmentation then runs in Python with confidence-basedwindow scanning over each line image. Character recognition is handled by a TensorFlow CNN trained for 27 Hebrew character classes, with preprocessing that cleans noise, trims whitespace, and normalizes character crops to 32x32. Styleclassification is a separate stage that compares each recognized character image against style templates using distance metrics like Manhattan and Euclidean distance, then assigns a page-level style by majority vote across characters. Thecurrent style set in the data is Archaic, Hasmonean, and Herodian.
 
-The approach drew on few-shot learning and domain-adapted features trained on synthetic degradation of existing manuscripts. Scribe attribution used a metric learning approach rather than a classifier, which generalises better when the number of known scribes might change.
-
-This work was part of a broader digital humanities collaboration.
+The interesting part is how the project deals with limited historical data. It includes custom augmentation work, including elastic morphing and a font interpolation workflow using SVG path morphing to generate synthetic glyph variants between reference shapes and observed handwriting forms. The main challenges are practical engineering ones: long runtime in segmentation, tight dependency compatibility between Python, TensorFlow, Tesseract, and MATLAB Engine, strict inputassumptions such as binarized JPGs and relative path layout, and handling ancient Hebrew output where a full Unicode mapping is not always straightforward so a custom character map is used.
