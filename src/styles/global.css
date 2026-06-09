@@ -5,7 +5,7 @@
   --rule-soft: #ddd5c0;
   --ink: #1a1814;
   --ink-2: #4a463c;
-  --ink-3: #807865;
+  --ink-3: #6b6350;
   --accent: #1a5d3a;
   --accent-soft: #1a5d3a18;
   --visited: #6b3a91;
@@ -24,7 +24,7 @@
   --rule-soft: #25241d;
   --ink: #e8e3d3;
   --ink-2: #b8b09a;
-  --ink-3: #7a7460;
+  --ink-3: #9a9278;
   --accent: #6cc28b;
   --accent-soft: #6cc28b1f;
   --visited: #b58cd8;
@@ -893,11 +893,12 @@ ol.list > li:nth-child(n + 9) {
 
 .crumbs a {
   color: var(--ink-2);
-  border-bottom: none;
+  border-bottom: 1px solid var(--rule);
 }
 
 .crumbs a:hover {
   color: var(--accent);
+  border-bottom-color: var(--accent);
 }
 
 .crumbs .sep {

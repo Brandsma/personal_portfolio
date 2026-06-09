@@ -56,7 +56,7 @@ function fmtDate(s: string) {
       <div class="tagbar" role="tablist" aria-label="filter work" id="work-tagbar">
         {
           ['all', 'research', 'engineering', 'side project'].map((t) => (
-            <button aria-pressed={t === 'all' ? 'true' : 'false'} data-filter={t}>
+            <button role="tab" aria-selected={t === 'all'} data-filter={t}>
               {t}
             </button>
           ))
@@ -97,7 +97,7 @@ function fmtDate(s: string) {
       <div class="tagbar" role="tablist" aria-label="filter writing" id="post-tagbar">
         {
           ['all', 'essay', 'research', 'ramble'].map((t) => (
-            <button aria-pressed={t === 'all' ? 'true' : 'false'} data-filter={t}>
+            <button role="tab" aria-selected={t === 'all'} data-filter={t}>
               {t}
             </button>
           ))
@@ -118,7 +118,7 @@ function fmtDate(s: string) {
                   <span class="sep">·</span>
                   <span>{p.data.reading}</span>
                 </div>
-                <div class="row-expand" aria-hidden="true">
+                <div class="row-expand" aria-hidden="true" inert="">
                   <div class="row-expand-inner">
                     {p.data.excerpt}
                     <a class="read" href={`/posts/${p.slug}`}>
@@ -289,11 +289,15 @@ function fmtDate(s: string) {
       if (activePost && activePost !== li) {
         activePost.classList.remove('open');
         activePost.removeAttribute('aria-selected');
-        activePost.querySelector('.row-expand')?.setAttribute('aria-hidden', 'true');
+        const prevExpand = activePost.querySelector('.row-expand');
+        prevExpand?.setAttribute('aria-hidden', 'true');
+        prevExpand?.setAttribute('inert', '');
       }
       li.classList.add('open');
       li.setAttribute('aria-selected', 'true');
-      li.querySelector('.row-expand')?.setAttribute('aria-hidden', 'false');
+      const newExpand = li.querySelector('.row-expand');
+      newExpand?.setAttribute('aria-hidden', 'false');
+      newExpand?.removeAttribute('inert');
       activePost = li;
     }
 
