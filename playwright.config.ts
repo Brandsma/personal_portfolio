@@ -11,6 +11,7 @@ export default defineConfig({
     baseURL: 'http://127.0.0.1:4321',
     trace: 'on-first-retry',
   },
+  snapshotPathTemplate: '{testDir}/screenshots/{testFileName}-{arg}{ext}',
   webServer: {
     command: 'npm run preview -- --host 127.0.0.1 --port 4321',
     url: 'http://127.0.0.1:4321',
