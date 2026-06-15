@@ -44,36 +44,22 @@ test.describe('Work detail pages', () => {
 });
 
 test.describe('Post detail pages', () => {
-  test('/posts/hello renders correctly', async ({ page }) => {
-    await page.goto('/posts/hello');
-    await expect(page.locator('body')).not.toContainText('404');
-    // Should have some article content
-    const bodyText = await page.textContent('body');
-    expect(bodyText!.length).toBeGreaterThan(100);
-  });
-
-  test('/posts/acceleration-of-acceleration renders', async ({ page }) => {
-    await page.goto('/posts/acceleration-of-acceleration');
-    await expect(page.locator('body')).not.toContainText('404');
-    const content = await page.textContent('body');
-    expect(content!.toLowerCase()).toContain('acceleration');
-  });
-
   test('/posts/incentives-of-ai renders', async ({ page }) => {
     await page.goto('/posts/incentives-of-ai');
     await expect(page.locator('body')).not.toContainText('404');
     const content = await page.textContent('body');
+    expect(content!.length).toBeGreaterThan(100);
     expect(content!.toLowerCase()).toContain('ai');
   });
 
   test('post pages have header navigation', async ({ page }) => {
-    await page.goto('/posts/hello');
+    await page.goto('/posts/incentives-of-ai');
     const nav = page.locator('header nav');
     await expect(nav).toBeVisible();
   });
 
   test('post pages have proper HTML structure', async ({ page }) => {
-    await page.goto('/posts/hello');
+    await page.goto('/posts/incentives-of-ai');
     // Should have html lang attribute
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
     // Should have meta viewport

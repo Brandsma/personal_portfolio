@@ -28,12 +28,15 @@ test.describe('Theme toggle', () => {
 
   test('clicking toggle twice returns to original state', async ({ page }) => {
     const html = page.locator('html');
-    const initialTheme = await html.getAttribute('data-theme');
+    // An unset data-theme renders as the default 'light' theme (see :root in
+    // global.css — there is no prefers-color-scheme), so normalise null →
+    // 'light' to compare the effective theme rather than the raw attribute.
+    const initialTheme = (await html.getAttribute('data-theme')) ?? 'light';
 
     await page.locator('#theme-toggle').click();
     await page.locator('#theme-toggle').click();
 
-    const finalTheme = await html.getAttribute('data-theme');
+    const finalTheme = (await html.getAttribute('data-theme')) ?? 'light';
     expect(finalTheme).toBe(initialTheme);
   });
 
