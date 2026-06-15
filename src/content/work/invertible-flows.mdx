@@ -9,27 +9,27 @@ order: 1
 
 > **Note** _The work presented here is an attempt at making a difficult topic easily understandable and does not represent proper scientific rigour in every aspect. For scientific rigour, I would like to refer you to the [original thesis](https://drive.google.com/file/d/1uPJ5zROuia0zzh2L6LjGPVb0thmao_Tc/view?usp=sharing)._
 
-A project where I spent the better part of a year researching fish, physics and novel neural network architectures. The context is as follows: a small sphere moves silently through the water while an array of eight sensors sits motionless on the bottom, quietly listening. Not listening for sound, but for something far more subtle: the movement of water itself as it flows around the moving object.
+A project where I spent the better part of a year researching fish, physics, and neural network architectures. The setup is a small sphere moving through water while an array of eight sensors on the bottom records flow disturbances created by the moving object.
 
-This scene captures the essence of **[hydrodynamic imaging](https://en.wikipedia.org/wiki/Hydrodynamics)** – the art of "seeing" underwater using only the patterns of water movement. It's an (evolutionary) skill that fish have mastered over millions of years through their [lateral line organs](https://en.wikipedia.org/wiki/Lateral_line), and one that we're now trying to teach machines.
+This scene captures the essence of **[hydrodynamic imaging](https://en.wikipedia.org/wiki/Hydrodynamics)**, which is the use of water-motion patterns to detect and characterize nearby objects. Fish developed this ability over millions of years through their [lateral line organs](https://en.wikipedia.org/wiki/Lateral_line), and current research tries to replicate that capability in machines.
 
-The experimental setup is deceptively simple. Eight optical sensors are arranged in a neat line across the bottom of our virtual pool, each one 50 millimeters apart, creating a 400-millimeter sensing array. Above them, a sphere travels various paths – sometimes straight, sometimes curved, sometimes in complex zigzag patterns that would make a drunk fish proud.
+The experimental setup is simple. Eight optical sensors are arranged in a line across the bottom of a virtual pool, each 50 millimeters apart, creating a 400-millimeter sensing array. Above them, a sphere follows several trajectories, including straight, curved, and zigzag paths.
 
 ![example-environment.png](https://i.postimg.cc/7hyk32nG/example-environment.png)
 
-As the sphere moves, it creates predictable disturbances in the water that follow the elegant equations of **[potential flow theory](https://en.wikipedia.org/wiki/Potential_flow)**. Every movement generates a unique signature in the flow field – a hydrodynamic fingerprint that our sensors can detect.
+As the sphere moves, it creates predictable disturbances in the water that follow **[potential flow theory](https://en.wikipedia.org/wiki/Potential_flow)**. Each movement generates a distinct flow signature that the sensors can detect.
 
 ## Understanding Potential Flow: The Invisible Architecture of Moving Water
 
-Before diving into the mathematics, it's worth understanding what [potential flow](https://en.wikipedia.org/wiki/Potential_flow) actually represents. Think of water as a three-dimensional grid of tiny particles, all connected by invisible springs. When our sphere moves through this grid, it doesn't just bulldoze water out of the way – it creates a coordinated dance where every water particle adjusts its motion to accommodate the sphere's presence.
+Before diving into the mathematics, it helps to clarify what [potential flow](https://en.wikipedia.org/wiki/Potential_flow) represents. A useful mental model is a three-dimensional grid of water particles. When the sphere moves through this grid, nearby particles adjust their motion according to physical constraints.
 
-This adjustment follows strict rules. Water can't be compressed (it's incompressible), water particles can't suddenly start spinning (the flow is irrotational), and there's no friction to speak of (it's inviscid). These constraints create surprisingly elegant patterns. Picture dropping a stone into a perfectly still pond – the ripples spread outward in perfect circles because the water is following mathematical laws, not random chance.
+This adjustment follows strict rules. Water is treated as incompressible, the flow is irrotational, and viscosity is neglected. These constraints create structured patterns. Picture dropping a stone into a still pond. Ripples spread outward in circles because the water follows mathematical laws.
 
-In three dimensions around our moving sphere, the flow pattern looks like streamlines wrapping around the object, squeezing together where the sphere is widest and spreading apart where it tapers. These streamlines carry information – their density tells us about flow speed, their direction reveals the sphere's motion, and their overall pattern encodes the sphere's size.
+In three dimensions around the moving sphere, streamlines wrap around the object, squeeze together near its widest section, and spread apart elsewhere. These streamlines carry information: density indicates flow speed, direction indicates motion, and the overall pattern relates to object size.
 
-> ⚡ **Key Insight**: Fish don't measure water pressure directly. They measure how the flow pattern deforms around moving objects. It's like reading the shadow an object casts in water flow instead of seeing the object itself.
+> ⚡ **Key Insight**: Fish infer nearby objects from changes in local flow patterns measured by the lateral line.
 
-When our sphere glides through the pool, it doesn't just push water out of the way randomly. Instead, it creates patterns governed by mathematical laws that have been understood for centuries. The beauty starts with the **[velocity potential](https://en.wikipedia.org/wiki/Velocity_potential)** – a scalar function φ(x,y,z) that completely describes how water wants to flow around our moving sphere.
+When the sphere moves through the pool, it creates patterns governed by mathematical laws. A central concept is the **[velocity potential](https://en.wikipedia.org/wiki/Velocity_potential)**, a scalar function φ(x,y,z) that describes the flow around the sphere.
 
 For [incompressible](https://en.wikipedia.org/wiki/Incompressible_flow), [irrotational flow](https://en.wikipedia.org/wiki/Irrotational_vector_field) (which is a reasonable approximation for our sensing scenario), we can define the velocity field as the negative gradient of this potential:
 
@@ -43,9 +43,9 @@ $$
 \phi(x,y,z) = (a^3/2) \times \frac{(\vec{W} \cdot \vec{r})}{ \lvert\vec{r}\rvert^3}
 $$
 
-where $\vec{r}$ = [x,y,z] is the position vector from the sphere's center. This equation is remarkably elegant – it says that the flow disturbance depends on the cube of the sphere size ($a^3$), scales linearly with velocity ($\vec{W}$), and falls off as the cube of distance ($\vert\vec{r}\vert^3$).
+where $\vec{r}$ = [x,y,z] is the position vector from the sphere's center. This equation shows that the flow disturbance depends on the cube of sphere size ($a^3$), scales linearly with velocity ($\vec{W}$), and falls off with the cube of distance ($\vert\vec{r}\vert^3$).
 
-But here's where the mathematics show us something insightful. This velocity potential must satisfy **[Laplace's equation](https://en.wikipedia.org/wiki/Laplace%27s_equation)**:
+An important consequence is that this velocity potential must satisfy **[Laplace's equation](https://en.wikipedia.org/wiki/Laplace%27s_equation)**:
 
 $$
 \nabla^2\phi = \frac{\partial^2\phi}{\partial x^2} + \frac{\partial^2\phi}{\partial y^2} + \frac{\partial^2\phi}{\partial z^2} = 0
@@ -88,7 +88,7 @@ $$
 v_y = \frac{a^3 \left\lVert w \right\rVert}{2d^3}(\Psi_n \sin{\theta} + \Psi_o \cos{\theta}).
 $$
 
-Here, $d$ is the distance from sphere to sensor array, and $\theta$ is the angle of motion. Notice how the sphere size appears cubed ($a^3$) – this means a sphere twice as large creates eight times the signal. The distance also appears cubed in the denominator, so doubling the distance reduces the signal by a factor of eight. This cubic relationship makes detection of small, distant objects extraordinarily challenging.
+Here, $d$ is the distance from sphere to sensor array, and $\theta$ is the angle of motion. Sphere size appears as $a^3$, so a sphere twice as large creates eight times the signal. Distance also appears cubed in the denominator, so doubling the distance reduces the signal by a factor of eight. This cubic relationship makes detection of small, distant objects challenging.
 
 ![A graphical representation of the wavelet family (a) and the velocity profiles, vx (b) and vy (c) for a sphere of size 10 (mm) moving parallel to the array at a constant speed of 10 mm/s. This is the concatenated representation of 1024 uniformly spaced sensors between -200 mm and 200 mm.](https://i.imgur.com/iIPDcaG.png)
 
@@ -121,13 +121,13 @@ def compute_velocity_profiles(sphere_pos, sphere_velocity, sphere_radius,
     return v_x, v_y
 ```
 
-These mathematical relationships connect the physical world of moving spheres to sensor measurements through well-understood equations. Fish have been using these patterns for millions of years. Now we're teaching machines to decode them.
+These mathematical relationships connect moving spheres to sensor measurements through well-understood equations. Fish use similar flow cues through the lateral line. This project applies those same cues in a machine-learning setting.
 
-So what can we actually extract from these hydrodynamic signatures? Traditional research in this field focused on two basic pieces of information – where the object is (x, y coordinates) and which way it's heading (angle $\theta$). But looking at our equations, we should be able to extract much more. The velocity potential contains information about the sphere's size ($a^3$ term) and speed ($\lVert\vec{W}\rVert$ term). The question was: could we actually recover these hidden characteristics from real sensor data?
+So what can we extract from these hydrodynamic signatures? Traditional research in this field focused on two outputs: object location (x, y) and heading angle ($\theta$). The equations also contain information about sphere size ($a^3$) and speed ($\lVert\vec{W}\rVert$). A key question was whether those additional characteristics could be recovered from sensor data.
 
-This became one of the central challenges of my research. Previous work had established that location and angle were recoverable, but speed and size had never been successfully extracted from artificial lateral line data before. The mathematical relationships were clear, but the [inverse problem](https://en.wikipedia.org/wiki/Inverse_problem) – working backwards from noisy sensor measurements to object properties – proved incredibly challenging.
+This became one of the central challenges of my research. Previous work had established that location and angle were recoverable, while speed and size had not been extracted successfully from artificial lateral line data. The mathematical relationships were clear, and the [inverse problem](https://en.wikipedia.org/wiki/Inverse_problem), which works backward from noisy sensor measurements to object properties, remained difficult.
 
-Working backwards from sensor readings to object properties is what mathematicians call an **inverse problem**. It's notoriously difficult because it's often [ill-posed](https://en.wikipedia.org/wiki/Well-posed_problem) – meaning multiple solutions can exist, or small changes in measurements can lead to wildly different answers. In our case, consider the equation:
+Working backwards from sensor readings to object properties is what mathematicians call an **inverse problem**. It is often [ill-posed](https://en.wikipedia.org/wiki/Well-posed_problem), meaning multiple solutions can exist or small measurement changes can produce large output changes. In our case, consider the equation:
 
 $$
 signal\ strength \propto (a^3 \times \lVert\vec{W}\rVert) / d^3
@@ -139,7 +139,7 @@ A small, fast sphere close to the sensors (small $a$, large $\lVert\vec{W}\rVert
 
 ![ill-posed-forward-v-backward.png](https://i.postimg.cc/RF5qNqyh/ill-posed-forward-v-backward.png)
 
-Real sensors add another layer of complexity – noise. Our sensors don't measure perfect velocities; they measure velocities plus random errors:
+Real sensors add another layer of complexity: noise. The measured velocities include random error:
 
 $$
 v_\text{measured} = v_\text{true} + n\
@@ -154,7 +154,7 @@ $$
 
 This means small, slow, or distant objects become exponentially harder to detect and characterize. When SNR drops below about 3, reliable detection becomes nearly impossible.
 
-Instead of trying to solve the inverse problem analytically, we can train [neural networks](https://en.wikipedia.org/wiki/Neural_network) to learn the complex mapping from sensor data to object properties directly from examples. Previous research had established that **[Long Short-Term Memory (LSTM)](https://en.wikipedia.org/wiki/Long_short-term_memory)** networks excel at this task, and the key insight is that temporal context is everything.
+Another approach is to train [neural networks](https://en.wikipedia.org/wiki/Neural_network) to learn the mapping from sensor data to object properties directly from examples. Previous research had established that **[Long Short-Term Memory (LSTM)](https://en.wikipedia.org/wiki/Long_short-term_memory)** networks perform well on this task because temporal context carries important information.
 
 While a single snapshot of sensor data might be ambiguous, watching how the signals evolve over time provides crucial additional information. LSTMs are a specialized type of [recurrent neural network](https://en.wikipedia.org/wiki/Recurrent_neural_network) designed to capture long-term dependencies in sequential data through sophisticated gating mechanisms that control information flow and memory retention. For a detailed explanation of LSTM architecture and functionality, see the [Wikipedia article on LSTMs](https://en.wikipedia.org/wiki/Long_short-term_memory).
 
@@ -178,9 +178,9 @@ class LateralLineLSTM(tf.keras.Model):
         return predictions
 ```
 
-Think of it like this: if you hear a single musical note, you might not recognize the song. But hearing that note in the context of the notes before and after makes the melody clear. The LSTM does the same thing with hydrodynamic signatures.
+A single measurement can be ambiguous, while a short sequence provides enough context to identify the pattern. The LSTM uses that temporal context to interpret hydrodynamic signatures.
 
-But I wondered if we could do better with more sophisticated architectures. My first innovation involved **[Invertible Neural Networks (INNs)](https://arxiv.org/abs/1808.04730)** – a fascinating class of networks that can learn bidirectional mappings. Unlike traditional networks that only learn X → Y, INNs learn both X → Y AND Y → X simultaneously.
+I also evaluated more sophisticated architectures. The first was **[Invertible Neural Networks (INNs)](https://arxiv.org/abs/1808.04730)**, a class of networks that can learn bidirectional mappings. Traditional models usually learn X → Y. INNs learn both X → Y and Y → X.
 
 This works through "[coupling layers](https://arxiv.org/abs/1605.08803)" that implement a specific mathematical structure. For an input vector x split into two parts x₁ and x₂:
 
@@ -210,7 +210,7 @@ def coupling_layer_inverse(y1, y2, scale_net, translation_net):
     return x1, x2
 ```
 
-> 🔄 **The Invertibility Magic**: Half of the input passes through unchanged while the other half undergoes a carefully designed transformation. Because we know exactly how the transformation was applied, we can always undo it perfectly.
+> 🔄 **Invertibility**: Half of the input passes through unchanged while the other half undergoes a designed transformation. Because the transformation is known, the inverse can be computed exactly.
 
 Half of the input passes through unchanged, while the other half undergoes an [affine transformation](https://en.wikipedia.org/wiki/Affine_transformation) (scaling and translation) based on the unchanged half. Because affine transformations are easily invertible, we can always recover the original input exactly.
 
@@ -265,7 +265,7 @@ class LateralLineINN(tf.keras.Model):
         return y  # object properties
 ```
 
-But there's a subtlety here. Real inverse problems are often ill-posed, meaning multiple inputs can produce the same output. INNs handle this by augmenting the output space with latent variables $z$ sampled from a known distribution:
+There is a subtlety here. Real inverse problems are often ill-posed, meaning multiple inputs can produce the same output. INNs handle this by augmenting the output space with latent variables $z$ sampled from a known distribution:
 
 $$
 \text{Forward}: (x, y, \theta) + \text{zero padding} \rightarrow (v_x, v_y) + \text{latent variables}
@@ -277,7 +277,7 @@ $$
 
 The latent variables capture the "missing information" needed to make the inverse mapping unique. During training, we ensure these latent variables follow a standard [Gaussian distribution](https://en.wikipedia.org/wiki/Normal_distribution) using [Maximum Mean Discrepancy (MMD)](https://en.wikipedia.org/wiki/Kernel_embedding_of_distributions#Maximum_mean_discrepancy) loss.
 
-The second innovation drew from **[Physics-Informed Neural Networks (PINNs)](https://en.wikipedia.org/wiki/Physics-informed_neural_networks)**. The core idea is elegant: if we know the physical laws governing our system, why not incorporate them directly into the learning process?
+The second innovation drew from **[Physics-Informed Neural Networks (PINNs)](https://en.wikipedia.org/wiki/Physics-informed_neural_networks)**. The core idea is to incorporate known physical laws directly into the learning process.
 
 Remember our Laplace equation constraint? For potential flow around a sphere, this translates to a specific relationship between the measured velocities. Starting from the velocity potential and taking the required derivatives, we get:
 
@@ -313,11 +313,11 @@ def physics_loss(x, y, v_x, v_y, W_x, W_y):
     return tf.reduce_mean(tf.square(residual))
 ```
 
-> 🧠 **Physics as Teacher**: Instead of just learning from examples, the network also learns from the fundamental laws of physics. It's like having both a tutor and a textbook teaching the same subject.
+> 🧠 **Physics as Teacher**: The network learns from examples and from the governing physical laws.
 
-The network has to not only fit the training data but also respect the laws of fluid dynamics. It's like teaching a student not just to memorize facts, but to understand the underlying principles.
+The network is trained to fit data while respecting fluid-dynamics constraints.
 
-I combined both innovations into a novel architecture: **Physics-Informed Invertible Neural Networks (PI/INNs)**. The key insight was that traditional PINNs can only enforce physics on the forward direction. But what if we want physics-informed inverse mappings? The INN architecture solved this elegantly: by training on the forward direction with physics constraints, we automatically get a physics-informed inverse mapping for (semi) free!
+I combined both innovations into **Physics-Informed Invertible Neural Networks (PI/INNs)**. Traditional PINNs enforce physics on the forward direction. With an INN, training the forward direction with physics constraints also provides an inverse mapping that inherits those constraints.
 
 The complete loss function balances multiple objectives:
 
@@ -415,7 +415,7 @@ $$
 
 This means speed estimation is inherently more sensitive to noise than position estimation, explaining why good primary estimation is crucial for reliable secondary features.
 
-The results showed that the LSTM achieved speed errors of 0.5-0.7 mm/s and volume errors of 0.2-1.9 mm , while the PI/INN showed moderate performance. For the first time, we could successfully extract object speed and volume from artificial lateral line sensor data – characteristics that had never been recovered before in this field.
+The results showed that the LSTM achieved speed errors of 0.5-0.7 mm/s and volume errors of 0.2-1.9 mm, while the PI/INN showed moderate performance. The study also demonstrated extraction of object speed and volume from artificial lateral line sensor data, which had not been reported previously in this context.
 
 Real-world sensors are noisy, so I tested how each architecture handled increasingly challenging conditions. Remarkably, in high-noise conditions, the physics-informed approach sometimes performed worse than the plain invertible network.
 
@@ -425,9 +425,9 @@ $$
 \text{Total Loss} = \text{Data Fitting Loss} + \lambda \times \text{Physics Loss}
 $$
 
-The data fitting term tries to match noisy observations, while the physics term enforces clean mathematical relationships. When noise is large, these objectives conflict – the noisy data no longer satisfies the physical constraints. The optimization process must choose between fitting the data and satisfying physics, often leading to suboptimal compromise solutions.
+The data fitting term tries to match noisy observations, while the physics term enforces clean mathematical relationships. When noise is large, these objectives conflict because the noisy data no longer satisfies the physical constraints. The optimization process then balances two competing targets, which can lead to weaker solutions.
 
-> ⚖️ **The Physics-Noise Trade-off**: When data is relatively clean, physics constraints are like having a wise teacher guide your learning. When data is noisy, those same constraints can become a stubborn teacher insisting on rules that don't match what you're seeing.
+> ⚖️ **The Physics-Noise Trade-off**: With cleaner data, physics constraints improve training. With noisier data, those constraints can reduce fit quality.
 
 This can be seen mathematically. If our true signal follows the physics constraint $f(x,y) = 0$, but our noisy measurements satisfy $f(x,y) = \epsilon$ where $\epsilon$ is the noise contribution, then enforcing $f(x,y) = 0$ actually pulls us away from the best fit to the noisy data.
 
@@ -439,7 +439,7 @@ $$
 
 where N is the number of temporal observations. This square-root improvement with sample size is a key insight from statistics, and it explains why temporal models consistently outperform instantaneous approaches.
 
-Physics-informed constraints help when conditions are favorable – clean data, well-understood physics, interpolation tasks – but they can hurt when data is noisy or models are imperfect. The key insight is that physics provides a valuable prior, but it shouldn't override strong contradictory evidence as the provided physical relations might not fit the situation.
+Physics-informed constraints help when conditions are favorable, such as clean data, well-understood physics, and interpolation tasks. They can hurt when data is noisy or model assumptions are imperfect. Physics acts as a prior, and its influence must be tuned to match data quality.
 
 Successfully extracting speed and volume revealed the importance of error propagation in derived quantities. The mathematical relationships show that errors in primary estimates (position, angle) propagate through the analytical derivations to affect secondary features. For the velocity potential inversion:
 
@@ -449,8 +449,8 @@ $$
 
 This means errors are amplified when the wavelet amplitude is small, which happens when the object is far from sensors or moving in unfavorable orientations. Understanding these mathematical sensitivities helps explain why some configurations are much easier to characterize than others.
 
-This research sits at the intersection of several important trends: [bio-inspired engineering](https://en.wikipedia.org/wiki/Biomimetics) that takes lessons from evolution, physics-aware AI that incorporates domain knowledge, and inverse problem solving that works backwards from observations to causes. The successful extraction of novel features demonstrates that creative problem formulation can unlock new capabilities even with existing sensor technologies.
+This research sits at the intersection of [bio-inspired engineering](https://en.wikipedia.org/wiki/Biomimetics), physics-aware machine learning, and inverse-problem solving from observations to causes. The extraction of additional features shows that careful problem formulation can extend what existing sensor setups can recover.
 
-The fish that inspired this journey continue to navigate their underwater world with effortless precision, their lateral lines processing fluid dynamics in real-time with an elegance our artificial systems approximate but don't yet match. This research represents a step toward that biological sophistication – teaching machines to sense the subtle signatures that water leaves as life moves through it. For more on this topic, I urge you to take a look at some of the work of Ben Wolf & Sietse van Netten. [For instance this paper.](https://pure.rug.nl/ws/portalfiles/portal/83201704/08706030.pdf)
+Fish still outperform current artificial systems in underwater flow sensing through their lateral lines. This research is one step toward that level of capability by teaching models to interpret subtle hydrodynamic signatures. For more on this topic, see work by Ben Wolf and Sietse van Netten, including [this paper](https://pure.rug.nl/ws/portalfiles/portal/83201704/08706030.pdf).
 
-Perhaps most importantly, this work demonstrates that nature remains a magnificent teacher. The solutions to tomorrow's technological challenges might already exist in the rivers, oceans, and streams around us, waiting for the right combination of biological curiosity, mathematical insight, and computational power to unlock their secrets.
+This work also highlights how biological sensing systems can guide technical design. Natural systems in rivers, oceans, and streams remain a useful source of ideas for future sensing methods.
