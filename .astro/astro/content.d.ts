@@ -189,6 +189,13 @@ declare module 'astro:content' {
   collection: "work";
   data: InferEntrySchema<"work">
 } & { render(): Render[".mdx"] };
+"tether-art.mdx": {
+	id: "tether-art.mdx";
+  slug: "tether-art";
+  body: string;
+  collection: "work";
+  data: InferEntrySchema<"work">
+} & { render(): Render[".mdx"] };
 };
 
 	};
