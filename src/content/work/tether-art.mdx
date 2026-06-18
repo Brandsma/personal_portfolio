@@ -1,0 +1,16 @@
+---
+title: 'tether-art: peer-to-peer pixel canvas'
+year: '2026'
+tag: 'engineering'
+venue: 'open source'
+note: 'webrtc · crdt · browser p2p'
+order: 5
+---
+
+Tether-art is a browser-based shared pixel canvas where every participant connects directly to peers and contributes one pixel per minute. There is no backend service holding state. The drawing exists while people keep tabs open, and a new session starts when the last participant leaves.
+
+The core of the project is a deterministic CRDT grid implemented as last-writer-wins registers over typed arrays. Each pixel stores color, Lamport clock, and writer identity, and peers resolve conflicts with the same ordering rule so replicas converge even when messages arrive in different orders. Peer discovery and transport run through Trystero on top of WebRTC, with public relays used for handshake ("signalling") only. Runtime data flow stays peer to peer.
+
+Joining peers request compressed snapshots, then continue through incremental pixel broadcasts. Session metadata allows groups that started independently to converge on a single timeline, with a clear tie-break rule. Rate limiting is enforced in the UI and validated cooperatively for remote updates, which keeps the protocol simple while discouraging spam in normal use.
+
+Available on [GitHub](https://github.com/brandsma/tether-art).
