@@ -8,3 +8,9 @@ node_modules/
 
 playwright-report/
 test-results/
+
+# Playwright visual regression screenshots (baselines committed)
+tests/e2e/screenshots/
+
+# Allow baseline screenshots to be committed
+!tests/e2e/screenshots/*.png

@@ -12,9 +12,11 @@
     "format:check": "prettier --check .",
     "test:links:internal": "linkinator http://127.0.0.1:4321 --recurse --silent --skip '^https?://(?!127\\.0\\.0\\.1:4321|localhost:4321)'",
     "test:links:internal:ci": "start-server-and-test 'astro preview --host 127.0.0.1 --port 4321' http://127.0.0.1:4321 'npm run test:links:internal'",
-    "test": "npm run test:unit && npm run test:e2e",
-    "test:unit": "vitest run",
-    "test:e2e": "playwright test",
+    "test": "npm run test:unit && npm run test:e2e && npm run test:visual && npm run test:perf",
+    "test:unit": "vitest run --exclude tests/unit/perf-budget.test.ts",
+    "test:e2e": "playwright test --grep-invert 'Visual Regression'",
+    "test:visual": "playwright test tests/e2e/visual-regression.spec.ts",
+    "test:perf": "vitest run tests/unit/perf-budget.test.ts",
     "prepare": "simple-git-hooks"
   },
   "simple-git-hooks": {
