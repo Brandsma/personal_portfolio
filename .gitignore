@@ -9,8 +9,11 @@ node_modules/
 playwright-report/
 test-results/
 
-# Playwright visual regression screenshots (baselines committed)
-tests/e2e/screenshots/
+# Playwright visual regression screenshots (baselines committed).
+# Note: must be `dir/*`, not `dir/` — excluding the directory itself would
+# stop git from descending into it, so the .png re-include would never apply
+# to newly added baselines.
+tests/e2e/screenshots/*
 
 # Allow baseline screenshots to be committed
 !tests/e2e/screenshots/*.png
