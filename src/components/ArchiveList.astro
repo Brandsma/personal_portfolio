@@ -1,0 +1,169 @@
+---
+/**
+ * Searchable, tag-filterable list of content rows.
+ * Used by /work/ (all projects) and intended for a future /posts/ index:
+ * map the collection into ArchiveItem[] and pass the distinct tags.
+ * All rows are server-rendered; the client script only shows/hides/reorders.
+ */
+export interface ArchiveItem {
+  title: string;
+  href: string;
+  tag: string;
+  /** leading meta value (year, date), rendered tabular */
+  stat: string;
+  /** additional meta values (venue, reading time, …) */
+  extra?: string[];
+  /** trailing de-emphasized meta value (note) */
+  dim?: string;
+  /** haystack the fuzzy search runs against */
+  search: string;
+}
+
+interface Props {
+  items: ArchiveItem[];
+  tags: string[];
+  placeholder?: string;
+  /** reflect search/tag state in ?q=&tag= (shareable, survives reload) */
+  syncUrl?: boolean;
+}
+
+const { items, tags, placeholder = 'fuzzy search…', syncUrl = true } = Astro.props;
+---
+
+<div class="archive" data-archive data-sync-url={syncUrl ? 'true' : 'false'}>
+  <div class="archive-controls">
+    <input
+      class="archive-search"
+      type="search"
+      placeholder={placeholder}
+      aria-label="fuzzy search"
+      autocomplete="off"
+      spellcheck="false"
+    />
+    <div class="archive-count" aria-live="polite">{items.length} of {items.length}</div>
+  </div>
+  <div class="tagbar" role="tablist" aria-label="filter by tag">
+    {
+      ['all', ...tags].map((t) => (
+        <button aria-pressed={t === 'all' ? 'true' : 'false'} data-filter={t}>
+          {t}
+        </button>
+      ))
+    }
+  </div>
+  <ol class="list">
+    {
+      items.map((item) => (
+        <li data-tag={item.tag} data-search={item.search}>
+          <div>
+            <div class="row-title">
+              <a href={item.href}>{item.title}</a>
+            </div>
+            <div class="row-meta">
+              <span class="stat">{item.stat}</span>
+              <span class="sep">·</span>
+              <span class="tag">{item.tag}</span>
+              {(item.extra ?? []).map((x) => (
+                <>
+                  <span class="sep">·</span>
+                  <span>{x}</span>
+                </>
+              ))}
+              {item.dim && (
+                <>
+                  <span class="sep">·</span>
+                  <span class="dim">{item.dim}</span>
+                </>
+              )}
+            </div>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+  <div class="archive-empty" hidden>
+    no matches ·
+    <button type="button" class="archive-reset">reset filters</button>
+  </div>
+</div>
+
+<script>
+  import { fuzzyMatch } from '../lib/fuzzy';
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-archive]')) {
+    const input = root.querySelector<HTMLInputElement>('.archive-search');
+    const tagbar = root.querySelector<HTMLElement>('.tagbar');
+    const list = root.querySelector<HTMLOListElement>('ol.list');
+    const count = root.querySelector<HTMLElement>('.archive-count');
+    const empty = root.querySelector<HTMLElement>('.archive-empty');
+    if (!input || !tagbar || !list || !count) continue;
+
+    const rows = [...list.querySelectorAll<HTMLLIElement>(':scope > li')];
+    const total = rows.length;
+    const syncUrl = root.dataset.syncUrl === 'true';
+    let activeTag = 'all';
+
+    const setTag = (tag: string) => {
+      const btn = tagbar.querySelector(`button[data-filter="${CSS.escape(tag)}"]`);
+      if (!btn) return;
+      activeTag = tag;
+      tagbar.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+      btn.setAttribute('aria-pressed', 'true');
+    };
+
+    const apply = () => {
+      // entrance animations restart on DOM reorder; disable them once filtering starts
+      list.classList.add('no-anim');
+      const query = input.value;
+      const scored = rows.map((li) => {
+        const tagOk = activeTag === 'all' || li.dataset.tag === activeTag;
+        const { matched, score } = fuzzyMatch(query, li.dataset.search ?? '');
+        return { li, show: tagOk && matched, score };
+      });
+
+      // with a query, best matches first; without one, restore curated order
+      const ordered = query.trim() ? [...scored].sort((a, b) => b.score - a.score) : scored;
+      for (const s of ordered) list.appendChild(s.li);
+      for (const s of scored) s.li.classList.toggle('hidden', !s.show);
+
+      const visible = scored.filter((s) => s.show).length;
+      count.textContent = `${visible} of ${total}`;
+      if (empty) empty.hidden = visible > 0;
+
+      if (syncUrl) {
+        const params = new URLSearchParams();
+        if (query.trim()) params.set('q', query.trim());
+        if (activeTag !== 'all') params.set('tag', activeTag);
+        const qs = params.toString();
+        history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+      }
+    };
+
+    input.addEventListener('input', apply);
+
+    tagbar.addEventListener('click', (e) => {
+      const btn = e.target instanceof Element ? e.target.closest('button') : null;
+      if (!btn) return;
+      setTag(btn.dataset.filter ?? 'all');
+      apply();
+    });
+
+    root.querySelector('.archive-reset')?.addEventListener('click', () => {
+      input.value = '';
+      setTag('all');
+      apply();
+      input.focus();
+    });
+
+    if (syncUrl) {
+      const params = new URLSearchParams(location.search);
+      const q = params.get('q') ?? '';
+      const tag = params.get('tag') ?? 'all';
+      if (q || tag !== 'all') {
+        input.value = q;
+        setTag(tag);
+        apply();
+      }
+    }
+  }
+</script>

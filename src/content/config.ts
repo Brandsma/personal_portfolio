@@ -9,6 +9,7 @@ const posts = defineCollection({
     tag: z.string(),
     excerpt: z.string(),
     deck: z.string(),
+    featured: z.boolean().default(false),
   }),
 });
 
@@ -21,6 +22,7 @@ const work = defineCollection({
     venue: z.string(),
     note: z.string(),
     order: z.number(),
+    featured: z.boolean().default(false),
   }),
 });
 

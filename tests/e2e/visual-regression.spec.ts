@@ -29,6 +29,24 @@ test.describe('Visual Regression', () => {
     });
   });
 
+  test('all writing page', async ({ page }) => {
+    await page.goto('/posts/');
+    await page.waitForLoadState('networkidle');
+    await expect(page).toHaveScreenshot('posts-index.png', {
+      fullPage: true,
+      maxDiffPixelRatio: 0.02,
+    });
+  });
+
+  test('all projects page', async ({ page }) => {
+    await page.goto('/work/');
+    await page.waitForLoadState('networkidle');
+    await expect(page).toHaveScreenshot('work-index.png', {
+      fullPage: true,
+      maxDiffPixelRatio: 0.02,
+    });
+  });
+
   test('work page', async ({ page }) => {
     await page.goto('/work/dss-handwriting');
     await page.waitForLoadState('networkidle');

@@ -1,14 +1,5 @@
 import { describe, it, expect } from 'vitest';
-
-/**
- * Unit test for the date formatting logic used on the homepage.
- * Mirrors the fmtDate function in src/pages/index.astro.
- */
-function fmtDate(s: string): string {
-  return new Date(s)
-    .toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
-    .toLowerCase();
-}
+import { fmtDate } from '../../src/lib/format';
 
 describe('fmtDate', () => {
   it('formats a date string correctly', () => {

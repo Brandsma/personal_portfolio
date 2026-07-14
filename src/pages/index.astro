@@ -1,25 +1,25 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
+import { fmtDate } from '../lib/format';
 
 const posts = (await getCollection('posts')).sort(
   (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
 );
+const FEATURED_POSTS = posts.filter((p) => p.data.featured);
 
 const WORK = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
+const FEATURED = WORK.filter((w) => w.data.featured);
 
+// the palette searches everything, featured or not
 const cmdItems = [
   ...WORK.map((w) => ({ kind: 'work', title: w.data.title, href: `/work/${w.slug}` })),
   ...posts.map((p) => ({ kind: 'writing', title: p.data.title, href: `/posts/${p.slug}` })),
+  { kind: 'page', title: 'all projects', href: '/work/' },
+  { kind: 'page', title: 'all writing', href: '/posts/' },
   { kind: 'page', title: 'about', href: '/#about' },
   { kind: 'page', title: 'contact', href: '/#contact' },
 ];
-
-function fmtDate(s: string) {
-  return new Date(s)
-    .toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
-    .toLowerCase();
-}
 ---
 
 <Base cmdItems={cmdItems}>
@@ -51,7 +51,7 @@ function fmtDate(s: string) {
     <section class="block reveal d2" id="work">
       <div class="h-row">
         <h2>selected work</h2>
-        <div class="right" id="work-count">{WORK.length} of {WORK.length}</div>
+        <div class="right" id="work-count">{FEATURED.length} of {FEATURED.length}</div>
       </div>
       <div class="tagbar" role="tablist" aria-label="filter work" id="work-tagbar">
         {
@@ -64,7 +64,7 @@ function fmtDate(s: string) {
       </div>
       <ol class="list" id="work-list">
         {
-          WORK.map((w) => (
+          FEATURED.map((w) => (
             <li data-tag={w.data.tag}>
               <div>
                 <div class="row-title">
@@ -84,6 +84,9 @@ function fmtDate(s: string) {
           ))
         }
       </ol>
+      <div class="show-all">
+        <a href="/work/">show all projects</a>
+      </div>
     </section>
 
     <!-- ── writing ────────────────────────────────── -->
@@ -105,7 +108,7 @@ function fmtDate(s: string) {
       </div>
       <ol class="list" id="post-list">
         {
-          posts.map((p) => (
+          FEATURED_POSTS.map((p) => (
             <li data-tag={p.data.tag} data-slug={p.slug}>
               <div>
                 <div class="row-title">
@@ -131,6 +134,9 @@ function fmtDate(s: string) {
           ))
         }
       </ol>
+      <div class="show-all">
+        <a href="/posts/">show all writing</a>
+      </div>
     </section>
 
     <!-- ── about ──────────────────────────────────── -->
@@ -238,7 +244,7 @@ function fmtDate(s: string) {
 
     <footer class="foot reveal d5">
       <span>© 2026 abe brandsma · abebrandsma.com</span>
-      <a href="/posts/incentives-of-ai">writing</a>
+      <a href="/posts/">writing</a>
       <span class="right dim">built with astro · may 2026</span>
     </footer>
   </main>

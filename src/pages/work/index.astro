@@ -1,0 +1,50 @@
+---
+import Base from '../../layouts/Base.astro';
+import ArchiveList from '../../components/ArchiveList.astro';
+import { getCollection } from 'astro:content';
+
+const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
+
+const tags = [...new Set(work.map((w) => w.data.tag))];
+
+const items = work.map((w) => ({
+  title: w.data.title,
+  href: `/work/${w.slug}`,
+  tag: w.data.tag,
+  stat: w.data.year,
+  extra: [w.data.venue],
+  dim: w.data.note,
+  search: [w.data.title, w.data.tag, w.data.venue, w.data.note, w.data.year].join(' '),
+}));
+
+const cmdItems = [
+  ...work.map((w) => ({ kind: 'work', title: w.data.title, href: `/work/${w.slug}` })),
+  { kind: 'page', title: 'home', href: '/' },
+];
+---
+
+<Base
+  title="all projects · abe brandsma"
+  description="Complete list of projects by Abe Brandsma — research, engineering, and side projects. Fuzzy-searchable and filterable by tag."
+  cmdItems={cmdItems}
+>
+  <main class="wrap">
+    <div class="crumbs reveal d1">
+      <a href="/">~</a><span class="sep">/</span>
+      <a href="/#work">work</a><span class="sep">/</span>
+      <span class="dim">all</span>
+    </div>
+
+    <section class="block reveal d2" id="projects">
+      <div class="h-row">
+        <h2>all projects</h2>
+        <div class="right">selected work lives on the <a href="/#work">homepage</a></div>
+      </div>
+      <ArchiveList items={items} tags={tags} placeholder="fuzzy search projects…" />
+    </section>
+
+    <div class="reveal d3" style="margin-top:2.5rem">
+      <a href="/" style="font-family:var(--mono);font-size:13px;color:var(--ink-2)">← back home</a>
+    </div>
+  </main>
+</Base>

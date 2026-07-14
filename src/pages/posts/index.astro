@@ -1,0 +1,59 @@
+---
+import Base from '../../layouts/Base.astro';
+import ArchiveList from '../../components/ArchiveList.astro';
+import { getCollection } from 'astro:content';
+import { fmtDate } from '../../lib/format';
+
+const posts = (await getCollection('posts')).sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
+);
+
+const tags = [...new Set(posts.map((p) => p.data.tag))];
+
+const items = posts.map((p) => ({
+  title: p.data.title,
+  href: `/posts/${p.slug}`,
+  tag: p.data.tag,
+  stat: fmtDate(p.data.date),
+  extra: [p.data.reading],
+  search: [
+    p.data.title,
+    p.data.tag,
+    p.data.deck,
+    p.data.excerpt,
+    p.data.reading,
+    fmtDate(p.data.date),
+  ].join(' '),
+}));
+
+const cmdItems = [
+  ...posts.map((p) => ({ kind: 'writing', title: p.data.title, href: `/posts/${p.slug}` })),
+  { kind: 'page', title: 'home', href: '/' },
+];
+---
+
+<Base
+  title="all writing · abe brandsma"
+  description="Complete list of writing by Abe Brandsma — essays, research notes, and ramblings. Fuzzy-searchable and filterable by tag."
+  cmdItems={cmdItems}
+>
+  <main class="wrap">
+    <div class="crumbs reveal d1">
+      <a href="/">~</a><span class="sep">/</span>
+      <a href="/#writing">writing</a><span class="sep">/</span>
+      <span class="dim">all</span>
+    </div>
+
+    <section class="block reveal d2" id="writing-all">
+      <div class="h-row">
+        <h2>all writing</h2>
+        <div class="right">selected writing lives on the <a href="/#writing">homepage</a></div>
+      </div>
+      <ArchiveList items={items} tags={tags} placeholder="fuzzy search writing…" />
+    </section>
+
+    <div class="reveal d3" style="margin-top:2.5rem">
+      <a href="/" style="font-family:var(--mono);font-size:13px;color:var(--ink-2)">← back home</a>
+    </div>
+  </main>
+</Base>

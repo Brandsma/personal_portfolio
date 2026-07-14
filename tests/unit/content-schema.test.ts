@@ -13,6 +13,7 @@ const postSchema = z.object({
   tag: z.string(),
   excerpt: z.string(),
   deck: z.string(),
+  featured: z.boolean().default(false),
 });
 
 const workSchema = z.object({
@@ -22,6 +23,7 @@ const workSchema = z.object({
   venue: z.string(),
   note: z.string(),
   order: z.number(),
+  featured: z.boolean().default(false),
 });
 
 describe('Post content schema', () => {
@@ -72,6 +74,23 @@ describe('Post content schema', () => {
   it('rejects post missing deck', () => {
     const { deck, ...incomplete } = validPost;
     const result = postSchema.safeParse(incomplete);
+    expect(result.success).toBe(false);
+  });
+
+  it('defaults featured to false when omitted', () => {
+    const result = postSchema.safeParse(validPost);
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.featured).toBe(false);
+  });
+
+  it('accepts featured: true', () => {
+    const result = postSchema.safeParse({ ...validPost, featured: true });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.featured).toBe(true);
+  });
+
+  it('rejects non-boolean featured', () => {
+    const result = postSchema.safeParse({ ...validPost, featured: 'true' });
     expect(result.success).toBe(false);
   });
 
@@ -145,6 +164,23 @@ describe('Work content schema', () => {
   it('accepts work with negative order', () => {
     const result = workSchema.safeParse({ ...validWork, order: -1 });
     expect(result.success).toBe(true);
+  });
+
+  it('defaults featured to false when omitted', () => {
+    const result = workSchema.safeParse(validWork);
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.featured).toBe(false);
+  });
+
+  it('accepts featured: true', () => {
+    const result = workSchema.safeParse({ ...validWork, featured: true });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.featured).toBe(true);
+  });
+
+  it('rejects non-boolean featured', () => {
+    const result = workSchema.safeParse({ ...validWork, featured: 'true' });
+    expect(result.success).toBe(false);
   });
 
   it('rejects work with null values', () => {

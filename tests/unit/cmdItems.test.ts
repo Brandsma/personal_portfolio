@@ -25,6 +25,8 @@ function buildCmdItems(work: WorkEntry[], posts: PostEntry[]): CmdItem[] {
   return [
     ...work.map((w) => ({ kind: 'work', title: w.data.title, href: `/work/${w.slug}` })),
     ...posts.map((p) => ({ kind: 'writing', title: p.data.title, href: `/posts/${p.slug}` })),
+    { kind: 'page', title: 'all projects', href: '/work/' },
+    { kind: 'page', title: 'all writing', href: '/posts/' },
     { kind: 'page', title: 'about', href: '/#about' },
     { kind: 'page', title: 'contact', href: '/#contact' },
   ];
@@ -47,9 +49,9 @@ const mockPosts: PostEntry[] = [
 ];
 
 describe('buildCmdItems', () => {
-  it('produces correct number of items (work + posts + 2 static pages)', () => {
+  it('produces correct number of items (work + posts + 4 static pages)', () => {
     const items = buildCmdItems(mockWork, mockPosts);
-    expect(items).toHaveLength(mockWork.length + mockPosts.length + 2);
+    expect(items).toHaveLength(mockWork.length + mockPosts.length + 4);
   });
 
   it('work items come first', () => {
@@ -69,11 +71,13 @@ describe('buildCmdItems', () => {
     }
   });
 
-  it('static pages (about, contact) are always last', () => {
+  it('static pages (all projects, all writing, about, contact) are always last', () => {
     const items = buildCmdItems(mockWork, mockPosts);
-    const lastTwo = items.slice(-2);
-    expect(lastTwo[0]).toEqual({ kind: 'page', title: 'about', href: '/#about' });
-    expect(lastTwo[1]).toEqual({ kind: 'page', title: 'contact', href: '/#contact' });
+    const lastFour = items.slice(-4);
+    expect(lastFour[0]).toEqual({ kind: 'page', title: 'all projects', href: '/work/' });
+    expect(lastFour[1]).toEqual({ kind: 'page', title: 'all writing', href: '/posts/' });
+    expect(lastFour[2]).toEqual({ kind: 'page', title: 'about', href: '/#about' });
+    expect(lastFour[3]).toEqual({ kind: 'page', title: 'contact', href: '/#contact' });
   });
 
   it('generates correct hrefs for work items', () => {
@@ -92,21 +96,23 @@ describe('buildCmdItems', () => {
 
   it('handles empty work array', () => {
     const items = buildCmdItems([], mockPosts);
-    expect(items).toHaveLength(mockPosts.length + 2);
+    expect(items).toHaveLength(mockPosts.length + 4);
     expect(items[0].kind).toBe('writing');
   });
 
   it('handles empty posts array', () => {
     const items = buildCmdItems(mockWork, []);
-    expect(items).toHaveLength(mockWork.length + 2);
-    expect(items[items.length - 3].kind).toBe('work');
+    expect(items).toHaveLength(mockWork.length + 4);
+    expect(items[items.length - 5].kind).toBe('work');
   });
 
   it('handles both empty arrays', () => {
     const items = buildCmdItems([], []);
-    expect(items).toHaveLength(2);
-    expect(items[0].title).toBe('about');
-    expect(items[1].title).toBe('contact');
+    expect(items).toHaveLength(4);
+    expect(items[0].title).toBe('all projects');
+    expect(items[1].title).toBe('all writing');
+    expect(items[2].title).toBe('about');
+    expect(items[3].title).toBe('contact');
   });
 
   it('preserves order of input arrays', () => {
