@@ -1,0 +1,81 @@
+---
+title: 'time to do nothing again'
+date: '2026-08-10'
+reading: '5 min'
+tag: 'essay'
+featured: true
+excerpt: 'Models generate faster than we can read, and the gap compounds. Sitting around a table watching an agent work looks like doing nothing, but it might be the most important work left.'
+deck: 'Models generate faster than we can read, and the gap compounds. Sitting around a table watching an agent work looks like doing nothing, but it might be the most important work left.'
+---
+
+# Time to Do Nothing Again
+
+Picture this: computer screens display rapidly moving text like a movie hacker stereotype while developers sit around a table twiddling their thumbs, essentially doing "nothing."
+
+Is that where we are right now? Is that our future? If so, that would be great! "Doing nothing" is actually becoming the most active and critical part of modern software development. Bertrand Russell would [praise our idleness](https://harpers.org/archive/1932/10/in-praise-of-idleness/).
+
+I run a lot of AI hackathons, teaching people how to effectively integrate AI into their day-to-day coding. Recently, I've been focusing more on how teams collaborate using this new development style, rather than just individuals. Does everyone separately allow their AI agent to go wild on the codebase? Are the agents proxies for us that mimic our own coding styles and ideas, discussing things amongst themselves? Or do we, as humans, sit around a table watching and discussing one agent while it works?
+
+The last scenario appeals to me the most, especially when it comes to dealing with "Comprehension Debt."
+
+Addy Osmani coined the term ["Comprehension Debt"](https://addyosmani.com/blog/comprehension-debt/) based on [Anthropic's research](https://www.anthropic.com/research/AI-assistance-coding-skills), which compared code comprehension between developers who used AI and those who didn't. As shown by the image below, the speed of each task was not significantly faster with AI, but the follow-up comprehension quiz led to significantly lower scores for the AI group.
+
+Looking closer, however, reveals better and worse interaction patterns with the AI. Simply delegating to the AI by saying "make it work" leads to the lowest comprehension (a 39% quiz score). If we instead ask conceptual inquiries, we see a higher score of 65%. Better yet, running through a "generation-then-comprehension" loop boosts the score to 86%. So, this generation-then-comprehension loop seems to work incredibly well (aligning perfectly with [Daniel Dennett's](https://en.wikipedia.org/wiki/Daniel_Dennett) concept of "competence without comprehension"). There are several other strategies you can use, which I've compiled into a list at the end of this article.
+
+![Comprehension quiz scores broken down by AI interaction pattern, from Anthropic's skill formation study](https://www-cdn.anthropic.com/images/4zrzovbb/website/ab5167a53ff0de956bd500b01b30d8aba028d843-4584x2580.png)
+
+_Image Source: Anthropic, [How AI assistance impacts the formation of coding skills](https://www.anthropic.com/research/AI-assistance-coding-skills). The full paper is [on arXiv](https://arxiv.org/abs/2601.20245)._
+
+Is it even possible to maintain proper comprehension, though? On average, models generate at a speed of roughly 30 to 60 tokens per second, although this differs significantly per model. Some can even generate up to 14,000 tokens per second. Good luck with that one.
+
+Humans roughly read around 4 to 8 tokens per second. So, in the best-case scenario, the model is generating four times faster than a human can read. Granted, you only need to read specific tokens to understand an application, but this disparity gives a clear indication of the problem, and it compounds over time. If you want to get a feel for how fast these token generations are, I recommend checking out [this website](https://mikeveerman.github.io/tokenspeed/?rate=30&mode=text) to see what reading speed is still comfortable for you.
+
+For reference, here was the result of one random Claude Code session I ran (using only RTK compression):
+
+| Quantity                                   | Tokens          |
+| ------------------------------------------ | --------------- |
+| Total metered output (407 API calls)       | ~470,000        |
+| Thinking (private reasoning, derived\*)    | ~295,000 (≈63%) |
+| Tool inputs (code, commands, edit anchors) | ~163,000 (≈35%) |
+| Of which new file content                  | ~96,000         |
+| Prose written to you                       | ~12,000         |
+
+_\*Derived rather than metered directly: total output minus tool inputs and prose._
+
+Note that about 63% are "thinking" tokens, which you could argue are irrelevant for understanding the end product. Even so, the sheer volume of generated tokens is massive.
+
+---
+
+This brings us back to the hackers sitting around the table twiddling their thumbs and watching an agent work. They are seemingly doing nothing. But that is incredibly important! Discussing what is being generated, debating what should happen next, or simply leaving room for "shower thoughts" to occur are all tremendous boons to understanding.
+
+## Ways to Pay It Down
+
+What else can we do? Here is a list of ways to deal with comprehension debt that I have either found online or thought of myself:
+
+- **Personally type what the AI generates:** It slows you down, but that's the point. You'll see every bit of the code being generated. If you lack understanding of specific parts, you'll immediately know where your knowledge gaps are and can start bridging them.
+
+- **Quiz yourself regularly:** Use a comprehension sidekick/sidecar that looks at your project and creates quizzes during the creation process, or enforce mandatory quizzes before a PR gets approved.
+
+- **Be okay with not understanding everything:** Once you start working at larger companies, such as Google, you'll be thrown into applications where thoroughly understanding every element of the software is impossible. Yet, these applications still function. Focus on understanding the specific piece you are working on.
+
+- **Make not knowing fine:** If code changes or failures are easily reversible, the cost of not fully understanding drops significantly.
+
+- **Tests:** Write tests, either with AI or by yourself. Define the specific behavior you expect. Tests are not silver bullets, though.
+
+- **Use Spec-driven development:** Use the specification as an artifact that you review and edit. Instead of code being your main artifact, let the LLM "compile" your code based on a natural language description of what you expect.
+
+- **Write Documentation:** Write lots of it. You can use AI to generate the documentation, but you will have to read it to verify if you agree with what it says.
+
+- **Mandatory Refactoring:** Require developers to refactor generated code before it can be accepted. Even simple things like changing variable names or matching the coding style of the team forces engagement with the code.
+
+- **Ask conceptual questions to understand:** Engage in active code reading and personal debugging by explicitly asking the AI conceptual questions about the architecture.
+
+- **Use AI to verify your own understanding:** Explain to the AI what you think the current code is doing. By doing so, you validate your own mental model of the software.
+
+- **Keep changes small:** Smaller iterations make it much easier to digest and comprehend what has changed.
+
+- **Track different indicators:** Velocity and [DORA metrics](https://dora.dev/) are important, but they omit comprehension debt. Use alternative metrics, such as what [Jo Van Eyck proposes](https://jvaneyck.wordpress.com/2026/03/21/comprehension-debt-the-hidden-tax-on-ai-generated-code/): time-to-root cause on incidents, unassisted debugging success rate, and onboarding depth.
+
+- **Shift comprehension load to verification:** Some things only need to be verified rather than deeply understood. We see this currently happening in the mathematical world with systems like the [Lean theorem prover](https://lean-lang.org/).
+
+Roughly summarized, there are only three real responses to AI coding: understand more, need to understand less (by letting verification carry the load), or make a lack of understanding cheap (through reversibility).
