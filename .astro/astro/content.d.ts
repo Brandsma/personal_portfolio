@@ -159,6 +159,13 @@ declare module 'astro:content' {
   collection: "posts";
   data: InferEntrySchema<"posts">
 } & { render(): Render[".mdx"] };
+"time-to-do-nothing-again.mdx": {
+	id: "time-to-do-nothing-again.mdx";
+  slug: "time-to-do-nothing-again";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".mdx"] };
 };
 "work": {
 "dss-handwriting.mdx": {
